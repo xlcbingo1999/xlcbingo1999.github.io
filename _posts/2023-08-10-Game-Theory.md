@@ -48,8 +48,6 @@ Game theory翻译过来就是博弈论，其实是研究多个玩家在互相交
   - Simulation：在前面新Expansion出来的节点开始模拟游戏，直到到达游戏结束状态，这样可以收到到这个expansion出来的节点的得分是多少。
   - Backpropagation：把前面expansion出来的节点得分反馈到前面所有父节点中，更新这些节点的quality value和visit times，方便后面计算UCB值。
   - 源代码：其中TREE_POLICY就是实现了Selection和和Expansion两个阶段，DEFAULT_POLICY实现了Simulation阶段，BACKUP实现了Backpropagation阶段。
-{% include figure.html path="assets/img/2023-08-10-Game-Theory/code.png" class="img-fluid rounded z-depth-1" %}
-
 - AlphaGo算法对MCTS算法的优化
   - 利用policy network的输出替换UCB的父节点访问次数，同样使用子节点访问次数作为分母保证exploration
   - Q值改为快速走子网络得到的所有叶子节点的均值，神经网络改成ResNet
