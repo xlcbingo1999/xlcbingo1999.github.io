@@ -6,7 +6,7 @@ subtitle: <a href='https://www.sysu.edu.cn/'>Sun Yat-sen University</a>
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: icon.jpg
   image_circular: false # crops the image to make it circular
   address: >
     <p>Guangzhou, China</p>
