@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 博弈论
-date: 2023-12-26 17:39:00
+date: 2023-08-10 17:39:00
 description: Game Theory
 tags: 理论类笔记
 categories: 理论类笔记
