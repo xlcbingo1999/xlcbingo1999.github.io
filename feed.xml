@@ -1,4 +1,424 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="cn"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://xlcbingo1999.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://xlcbingo1999.github.io/" rel="alternate" type="text/html" hreflang="cn"/><updated>2024-01-05T04:07:30+00:00</updated><id>https://xlcbingo1999.github.io/feed.xml</id><title type="html">blank</title><subtitle>A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design. </subtitle><entry><title type="html">CMake</title><link href="https://xlcbingo1999.github.io/blog/2023/CMake-learning/" rel="alternate" type="text/html" title="CMake"/><published>2023-12-27T17:39:00+00:00</published><updated>2023-12-27T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/CMake-learning</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/CMake-learning/"><![CDATA[<h2 id="初识-cmake">初识 CMake</h2> <p>wait for!</p>]]></content><author><name></name></author><category term="理论类笔记"/><category term="理论类笔记"/><summary type="html"><![CDATA[CMake Learning Note]]></summary></entry><entry><title type="html">Linchang Xiao’s CV</title><link href="https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv/" rel="alternate" type="text/html" title="Linchang Xiao’s CV"/><published>2023-12-26T17:39:00+00:00</published><updated>2023-12-26T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv/"><![CDATA[<p>Redirecting to Linchang Xiao’s CV.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Linchang Xiao's CV]]></summary></entry><entry><title type="html">体系结构相关技术</title><link href="https://xlcbingo1999.github.io/blog/2023/Arch/" rel="alternate" type="text/html" title="体系结构相关技术"/><published>2023-11-20T17:39:00+00:00</published><updated>2023-11-20T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/Arch</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/Arch/"><![CDATA[<h2 id="服务器查看物理cpu和逻辑cpu的情况">服务器查看物理cpu和逻辑cpu的情况</h2> <ul> <li>参考文献：<a href="https://blog.csdn.net/maizousidemao/article/details/103595846">https://blog.csdn.net/maizousidemao/article/details/103595846</a></li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="cn"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://xlcbingo1999.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://xlcbingo1999.github.io/" rel="alternate" type="text/html" hreflang="cn"/><updated>2024-01-05T14:26:02+00:00</updated><id>https://xlcbingo1999.github.io/feed.xml</id><title type="html">blank</title><subtitle>A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design. </subtitle><entry><title type="html">CMake和Makefile相关学习</title><link href="https://xlcbingo1999.github.io/blog/2023/CMake-learning/" rel="alternate" type="text/html" title="CMake和Makefile相关学习"/><published>2023-12-27T17:39:00+00:00</published><updated>2023-12-27T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/CMake-learning</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/CMake-learning/"><![CDATA[<h2 id="cmake">CMake</h2> <h3 id="cmake-通常的-build-和编译位置">CMake 通常的 build 和编译位置</h3> <ul> <li>参考文献：<a href="https://blog.csdn.net/shaoyou223/article/details/84764633">https://blog.csdn.net/shaoyou223/article/details/84764633</a></li> </ul> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 方案1: 创建</span>
+<span class="nb">mkdir </span>build
+<span class="nb">cd </span>build
+cmake ..
+make
+</code></pre></div></div> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 方案2: 直接在主目录下进行</span>
+cmake <span class="nt">-S</span> <span class="nb">.</span> <span class="nt">-B</span> build
+cmake <span class="nt">--build</span>
+</code></pre></div></div> <h3 id="ubuntu-安装-cmake">Ubuntu 安装 CMake</h3> <ul> <li>参考文献：<a href="https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line">https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line</a></li> <li>需要安装新版的 CMake 的时候就需要用这个文章里提到的方法</li> </ul> <h3 id="cmakelists-的编写规则">CMakelists 的编写规则</h3> <ul> <li>号称是全网最全的规则：<a href="https://zhuanlan.zhihu.com/p/534439206">https://zhuanlan.zhihu.com/p/534439206</a></li> </ul> <h3 id="fetchcontent-依赖库">FetchContent 依赖库</h3> <ul> <li>参考文献：<a href="https://juejin.cn/post/7102762548423819272">https://juejin.cn/post/7102762548423819272</a></li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># FetchContent 模块用于获取外部依赖库, 在构建生成文件的过程中被调用
+</span><span class="n">include</span><span class="p">(</span><span class="n">FetchContent</span><span class="p">)</span>
+<span class="cp"># FetchContent_Declare 描述如何下载依赖库
+</span><span class="n">FetchContent_Declare</span><span class="p">(</span>
+    <span class="n">pybind11</span>
+    <span class="n">GIT_REPOSITORY</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/pybind/pybind11.git</span>
+    <span class="n">GIT_TAG</span>        <span class="n">v2</span><span class="mf">.6.2</span>
+    <span class="n">GIT_SHALLOW</span>    <span class="n">TRUE</span>
+<span class="p">)</span>
+<span class="cp"># FetchContent_MakeAvaliable 下载依赖库, 并使其可用
+</span><span class="n">FetchContent_MakeAvailable</span><span class="p">(</span><span class="n">pybind11</span><span class="p">)</span>
+</code></pre></div></div> <h3 id="cmake-的多版本共存">CMake 的多版本共存</h3> <ul> <li>请不要直接删除 cmake，可能会导致一些文件被删除</li> <li>多版本共存 CMake 参考文献：<a href="https://zhuanlan.zhihu.com/p/442561052">https://zhuanlan.zhihu.com/p/442561052</a></li> </ul> <h3 id="cmakepresets-简化-cmake-项目初始化繁杂步骤">CMakePresets: 简化 CMake 项目初始化繁杂步骤</h3> <ul> <li>参考文献：<a href="https://cloud.tencent.com/developer/article/2348379">https://cloud.tencent.com/developer/article/2348379</a></li> <li> <p>针对不同平台的 CMake 指令主流配置方案</p> <ul> <li>缺点：命令非常长，配置可能不同开发机器上都不一样，对工程在不同设备上编译带来很大的挑战，非常容易编译出错。而且在版本迭代过程中，工程的配置是不断在更新的，很容易忘记去修改 README 或者项目文档导致一些历史的编译脚本缺少一些关键指令丢失内容，这不符合 GitOps 思想。</li> </ul> </li> </ul> <table> <thead> <tr> <th>参数</th> <th>Win</th> <th>Linux</th> <th>macOS</th> <th>iOS</th> <th>Android</th> <th> </th> </tr> </thead> <tbody> <tr> <td>-G [用于指定生成器（Generator），即指定生成的项目文件（例如 Makefile、Visual Studio 项目文件等）的类型]</td> <td>Visual Studio</td> <td>Unix Makefiles</td> <td>Xcode</td> <td>Xcode</td> <td> </td> <td> </td> </tr> <tr> <td>-A [ 用于指定目标平台的体系结构（Architecture）]</td> <td>Win32/x64</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr> <tr> <td>-DCMAKE_OSX_ARCHITECTURES [用于定义 CMake 变量]</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr> <tr> <td>-DTOOLSETS</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr> <tr> <td>-DCMAKE_SYSTEM_NAME</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr> <tr> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr> </tbody> </table> <ul> <li> <p>CMakePreset 的动机</p> <ul> <li>虽然不同的 IDE 或代码编辑器工具有提供一些自己的 CMake 初始化配置能力（如 Visual Studio Code 可通过 .vscode/settings.json 来配置一些默认值）但这都不是通用方案。每个人使用的开发工具都各要求。特别是开源项目，如果没有提供一套全平台对各类工具都支持的配置文件，这会让开发者在工程配置上就被劝退。所以我们期望对项目工程化改造的目标不仅仅是解决上面的痛苦问题，更期望能让开发人员在接手项目时不需要在编译工具链、工程配置上花费太多的心思，让主流的开发工具打开工程开箱即用。</li> <li>为了实现这个目标，CMake 从 3.19 版本就开始支持了 CMakePresets.json 配置。如果你的版本还低于 3.19 请尽快升级来体验下 C/C++ 生态工具链的魅力。</li> </ul> </li> <li> <p>CMakePreset 的几个阶段</p> <ul> <li>configure</li> <li>build</li> <li>test 【可选】</li> <li>package 【可选】</li> </ul> </li> <li> <p>常用的指令</p> <ul> <li><code class="language-plaintext highlighter-rouge">cmake --list-presets</code> ： 查看当前支持的配置</li> <li><code class="language-plaintext highlighter-rouge">cmake --preset=ios-release-arm64</code>：configure</li> <li><code class="language-plaintext highlighter-rouge">cmake --build --preset=ios-release-arm64</code>：build 阶段</li> </ul> </li> <li> <p>一个完整的 Preset 的例子</p> </li> </ul> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"version"</span>: 3,
+  <span class="s2">"cmakeMinimumRequired"</span>: <span class="o">{</span>
+    <span class="s2">"major"</span>: 3,
+    <span class="s2">"minor"</span>: 19,
+    <span class="s2">"patch"</span>: 0
+  <span class="o">}</span>,
+  <span class="s2">"configurePresets"</span>: <span class="o">[</span> <span class="c"># configure阶段的配置</span>
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"hidden"</span>: <span class="nb">true</span>,
+      <span class="s2">"condition"</span>: <span class="o">{</span>
+        <span class="s2">"type"</span>: <span class="s2">"equals"</span>,
+        <span class="s2">"lhs"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">hostSystemName</span><span class="k">}</span><span class="s2">"</span>,
+        <span class="s2">"rhs"</span>: <span class="s2">"Darwin"</span>
+      <span class="o">}</span>,
+      <span class="s2">"generator"</span>: <span class="s2">"Xcode"</span>,
+      <span class="s2">"warnings"</span>: <span class="o">{</span><span class="s2">"dev"</span>: <span class="nb">true</span>, <span class="s2">"deprecated"</span>: <span class="nb">true</span><span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"BUILD_TESTING"</span>: <span class="s2">"OFF"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-debug"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin 10.14+ (Debug)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS - Debug Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"BUILD_TESTING"</span>: <span class="s2">"ON"</span>,
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Debug"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/darwin-debug"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-release-arm64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin arm64 10.14+ (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS arm64 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-darwin-arm64-realese"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_OSX_ARCHITECTURES"</span>: <span class="s2">"arm64"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-arm64"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/darwin-release-arm64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-release-x86_64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin x86_64 10.14+ (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS x86_64 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-darwin-x86_64-realese"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/darwin-release-x86_64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-arm64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS arm64 9.0+ (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS arm64 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-ios-arm64-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"iOS"</span>,
+        <span class="s2">"CMAKE_OSX_DEPLOYMENT_TARGET"</span>: <span class="s2">"9.0"</span>,
+        <span class="s2">"CMAKE_OSX_ARCHITECTURES"</span>: <span class="s2">"arm64"</span>,
+        <span class="s2">"CMAKE_OSX_SYSROOT"</span>: <span class="s2">"iphoneos"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/ios-arm64-iphoneos"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/ios-release-arm64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-armv7"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS armv7 9.0+ (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS armv7 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-ios-armv7-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"iOS"</span>,
+        <span class="s2">"CMAKE_OSX_DEPLOYMENT_TARGET"</span>: <span class="s2">"9.0"</span>,
+        <span class="s2">"CMAKE_OSX_ARCHITECTURES"</span>: <span class="s2">"armv7"</span>,
+        <span class="s2">"CMAKE_OSX_SYSROOT"</span>: <span class="s2">"iphoneos"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/ios-armv7-iphoneos"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/ios-release-armv7"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-x86_64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS x86_64 9.0+ (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS x86_64 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-ios-x86_64-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"iOS"</span>,
+        <span class="s2">"CMAKE_OSX_DEPLOYMENT_TARGET"</span>: <span class="s2">"9.0"</span>,
+        <span class="s2">"CMAKE_OSX_ARCHITECTURES"</span>: <span class="s2">"x86_64"</span>,
+        <span class="s2">"CMAKE_OSX_SYSROOT"</span>: <span class="s2">"iphonesimulator"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/ios-x86_64-iphonesimulator"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/ios-release-x86_64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"macos-android"</span>,
+      <span class="s2">"hidden"</span>: <span class="nb">true</span>,
+      <span class="s2">"condition"</span>: <span class="o">{</span>
+        <span class="s2">"type"</span>: <span class="s2">"equals"</span>,
+        <span class="s2">"lhs"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">hostSystemName</span><span class="k">}</span><span class="s2">"</span>,
+        <span class="s2">"rhs"</span>: <span class="s2">"Darwin"</span>
+      <span class="o">}</span>,
+      <span class="s2">"warnings"</span>: <span class="o">{</span><span class="s2">"dev"</span>: <span class="nb">true</span>, <span class="s2">"deprecated"</span>: <span class="nb">true</span><span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"BUILD_TESTING"</span>: <span class="s2">"OFF"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86_64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos-android"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86_64 abi21 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86_64 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-android-x86_64-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"Android"</span>,
+        <span class="s2">"CMAKE_SYSTEM_VERSION"</span>: <span class="s2">"21"</span>,
+        <span class="s2">"CMAKE_ANDROID_STL_TYPE"</span>: <span class="s2">"c++_static"</span>,
+        <span class="s2">"CMAKE_ANDROID_ARCH_ABI"</span>: <span class="s2">"x86_64"</span>,
+        <span class="s2">"CMAKE_ANDROID_NDK"</span>: <span class="s2">"</span><span class="nv">$env</span><span class="s2">{HOME}/Library/Android/sdk/ndk/21.4.7075529"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/android-x86_64-abi21"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/android-release-x86_64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos-android"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86 abi21 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86 - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-android-x86-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"Android"</span>,
+        <span class="s2">"CMAKE_SYSTEM_VERSION"</span>: <span class="s2">"21"</span>,
+        <span class="s2">"CMAKE_ANDROID_STL_TYPE"</span>: <span class="s2">"c++_static"</span>,
+        <span class="s2">"CMAKE_ANDROID_ARCH_ABI"</span>: <span class="s2">"x86"</span>,
+        <span class="s2">"CMAKE_ANDROID_NDK"</span>: <span class="s2">"</span><span class="nv">$env</span><span class="s2">{HOME}/Library/Android/sdk/ndk/21.4.7075529"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/android-x86-abi21"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/android-release-x86"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-armeabi-v7a"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos-android"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android armeabi-v7a abi21 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android armeabi-v7a - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-android-armeabi-v7a-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"Android"</span>,
+        <span class="s2">"CMAKE_SYSTEM_VERSION"</span>: <span class="s2">"21"</span>,
+        <span class="s2">"CMAKE_ANDROID_STL_TYPE"</span>: <span class="s2">"c++_static"</span>,
+        <span class="s2">"CMAKE_ANDROID_ARCH_ABI"</span>: <span class="s2">"armeabi-v7a"</span>,
+        <span class="s2">"CMAKE_ANDROID_NDK"</span>: <span class="s2">"</span><span class="nv">$env</span><span class="s2">{HOME}/Library/Android/sdk/ndk/21.4.7075529"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/android-armeabi-v7a-abi21"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/android-release-armeabi-v7a"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-arm64-v8a"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"macos-android"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android arm64-v8a abi21 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android arm64-v8a - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-android-arm64-v8a-release"</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_SYSTEM_NAME"</span>: <span class="s2">"Android"</span>,
+        <span class="s2">"CMAKE_SYSTEM_VERSION"</span>: <span class="s2">"21"</span>,
+        <span class="s2">"CMAKE_ANDROID_STL_TYPE"</span>: <span class="s2">"c++_static"</span>,
+        <span class="s2">"CMAKE_ANDROID_ARCH_ABI"</span>: <span class="s2">"arm64-v8a"</span>,
+        <span class="s2">"CMAKE_ANDROID_NDK"</span>: <span class="s2">"</span><span class="nv">$env</span><span class="s2">{HOME}/Library/Android/sdk/ndk/21.4.7075529"</span>,
+        <span class="s2">"CONAN_PROFILE_BUILD"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/darwin-x86_64"</span>,
+        <span class="s2">"CONAN_PROFILE_HOST"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/.profiles/android-arm64-v8a-abi21"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/android-release-arm64-v8a"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"windows"</span>,
+      <span class="s2">"hidden"</span>: <span class="nb">true</span>,
+      <span class="s2">"condition"</span>: <span class="o">{</span>
+        <span class="s2">"type"</span>: <span class="s2">"equals"</span>,
+        <span class="s2">"lhs"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">hostSystemName</span><span class="k">}</span><span class="s2">"</span>,
+        <span class="s2">"rhs"</span>: <span class="s2">"Windows"</span>
+      <span class="o">}</span>,
+      <span class="s2">"generator"</span>: <span class="s2">"Visual Studio 15 2017"</span>,
+      <span class="s2">"warnings"</span>: <span class="o">{</span><span class="s2">"dev"</span>: <span class="nb">true</span>, <span class="s2">"deprecated"</span>: <span class="nb">true</span><span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/exports"</span>,
+        <span class="s2">"BUILD_TESTING"</span>: <span class="s2">"OFF"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"windows-debug"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"windows"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows x64 (Debug)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows - Debug Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build"</span>,
+      <span class="s2">"architecture"</span>: <span class="o">{</span>
+        <span class="s2">"value"</span>: <span class="s2">"x64"</span>,
+        <span class="s2">"strategy"</span>: <span class="s2">"set"</span>
+      <span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Debug"</span>,
+        <span class="s2">"CMAKE_DEBUG_POSTFIX"</span>: <span class="s2">"d"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"win32-release-x64"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"windows"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows x64 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-win32-x64"</span>,
+      <span class="s2">"architecture"</span>: <span class="o">{</span>
+        <span class="s2">"value"</span>: <span class="s2">"x64"</span>,
+        <span class="s2">"strategy"</span>: <span class="s2">"set"</span>
+      <span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/win32-release-x64"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"win32-release-ia32"</span>,
+      <span class="s2">"inherits"</span>: <span class="s2">"windows"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows ia32 (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows - Release Configuration"</span>,
+      <span class="s2">"binaryDir"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/build-win32-ia32"</span>,
+      <span class="s2">"architecture"</span>: <span class="o">{</span>
+        <span class="s2">"value"</span>: <span class="s2">"Win32"</span>,
+        <span class="s2">"strategy"</span>: <span class="s2">"set"</span>
+      <span class="o">}</span>,
+      <span class="s2">"cacheVariables"</span>: <span class="o">{</span>
+        <span class="s2">"CMAKE_BUILD_TYPE"</span>: <span class="s2">"Release"</span>,
+        <span class="s2">"CMAKE_INSTALL_PREFIX"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">sourceDir</span><span class="k">}</span><span class="s2">/win32-release-ia32"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">]</span>,
+  <span class="s2">"buildPresets"</span>: <span class="o">[</span> <span class="c"># build阶段的配置</span>
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-debug"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"darwin-debug"</span>, <span class="c"># 依赖的configure阶段</span>
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin Local Compilation (Debug)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS - Debug Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Debug"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-release-x86_64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"darwin-release-x86_64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin x86_64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS x86_64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-release-arm64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"darwin-release-arm64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Darwin x86_64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for macOS arm64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-arm64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"ios-release-arm64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS arm64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS arm64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-armv7"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"ios-release-armv7"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS armv7 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS armv7 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ios-release-x86_64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"ios-release-x86_64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"iOS x86_64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for iOS x86_64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86_64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-x86_64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86_64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86_64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86_64-strip"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-x86_64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86_64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86_64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install/strip"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-x86"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-x86-strip"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-x86"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android x86 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android x86 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install/strip"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-armeabi-v7a"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-armeabi-v7a"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android armeabi-v7a Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android armeabi-v7a - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-armeabi-v7a-strip"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-armeabi-v7a"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android armeabi-v7a Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android armeabi-v7a - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install/strip"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"android-release-arm64-v8a"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"android-release-arm64-v8a"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Android arm64-v8a Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Android arm64-v8a - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"windows-debug"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"windows-debug"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows Local Compilation (Debug)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows - Debug Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Debug"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"win32-release-x64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"win32-release-x64"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows x64 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows x64 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"win32-release-ia32"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"win32-release-ia32"</span>,
+      <span class="s2">"displayName"</span>: <span class="s2">"Windows ia32 Local Compilation (Release)"</span>,
+      <span class="s2">"description"</span>: <span class="s2">"NetEase MSS C wrapper for Windows ia32 - Release Configuration"</span>,
+      <span class="s2">"configuration"</span>: <span class="s2">"Release"</span>,
+      <span class="s2">"targets"</span>: <span class="o">[</span><span class="s2">"install"</span><span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">]</span>,
+  <span class="s2">"testPresets"</span>: <span class="o">[</span> <span class="c"># test阶段的配置</span>
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-debug"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"darwin-debug"</span>,
+      <span class="s2">"output"</span>: <span class="o">{</span><span class="s2">"outputOnFailure"</span>: <span class="nb">true</span><span class="o">}</span>,
+      <span class="s2">"execution"</span>: <span class="o">{</span><span class="s2">"noTestsAction"</span>: <span class="s2">"error"</span>, <span class="s2">"stopOnFailure"</span>: <span class="nb">true</span><span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"darwin-release-arm64"</span>,
+      <span class="s2">"configurePreset"</span>: <span class="s2">"darwin-release-arm64"</span>,
+      <span class="s2">"output"</span>: <span class="o">{</span><span class="s2">"outputOnFailure"</span>: <span class="nb">true</span><span class="o">}</span>,
+      <span class="s2">"execution"</span>: <span class="o">{</span><span class="s2">"noTestsAction"</span>: <span class="s2">"error"</span>, <span class="s2">"stopOnFailure"</span>: <span class="nb">true</span><span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div></div> <h3 id="cmake-的-generator-相关知识">CMake 的 Generator 相关知识</h3> <ul> <li>cmake 会通过 cmakelist.txt 文件，生成适用于不同项目类型的 makefile 文件，然后 makefile 文件被不同的编译器使用进行编译，考虑到 C/C++ 的开发环境之多，有非常多的种类的项目开发环境，但是 cmake 基本上都考虑到了，这里做一个小的汇总。 <ul> <li>Visual Studio 6: 生成 Visual Studio 6 工程文件。</li> <li>Visual Studio 7: 生成 Visual Studio .NET 2002 工程文件。</li> <li>Visual Studio 10: 生成 Visual Studio 10(2010) 工程文件。</li> <li>Visual Studio 10 Win64 会生成 x64 平台的工程;Visual Studio 10 IA64 是 Itanium 平台。</li> <li>Visual Studio 11: 生成 Visual Studio 11(2012) 工程文件。</li> <li>Visual Studio 11 Win64 会生成 x64 平台的工程;Visual Studio 11 ARM 是 ARM 平台。</li> <li>Visual Studio 7 .NET 2003: 生成 Visual Studio 7 .NET 2003 工程文件。</li> <li>Visual Studio 8 2005: 生成 Visual Studio 8 2005 工程文件。</li> <li>Visual Studio 8 2005 Win64 会生成 x64 平台的工程。</li> <li>Visual Studio 9 2008: 生成 Visual Studio 9 2008 工程文件。</li> <li>Visual Studio 9 2008 Win64 会生成 x64 平台的工程;Visual Studio 9 2008 IA64 是 Itanium 平台。</li> <li>Borland Makefiles: 生成 Borland makefile。</li> <li>NMake Makefiles: 生成 NMake makefile。</li> <li>NMake Makefiles JOM: 生成 JOM makefile。</li> <li>Watcom WMake: 生成 Watcom WMake makefiles。</li> <li>MSYS Makefiles: 生成 MSYS makefile。 生成的 makefile 用 /bin/sh 作为它的 shell。在运行 CMake 的机器上需要安装 msys</li> <li>MinGW Makefiles: 生成供 mingw32-make 使用的 make file。 生成的 makefile 使用 cmd.exe 作为它的 shell。生成它们不需要 msys 或者 unix shell。</li> <li>Unix Makefiles: 生成标准的 UNIX makefile。 在构建树上生成分层的 UNIX makefile。任何标准的 UNIX 风格的 make 程序都可以通过默认的 make 目标构建工程。生成的 makefile 也提供了 install 目标。</li> <li>Ninja：生成.ninja 工程</li> <li>Xcode：生成 Xcode 工程</li> <li>CodeBlocks - MinGW Makefiles：生成 CodeBlocks 工程。</li> <li>在顶层目录以及每层子目录下为 CodeBlocks 生成工程文件，生成的 CMakeList.txt 的特点是都包含一个 PROJECT()调用。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>CodeBlocks - NMake Makefiles：生成 CodeBlocks 工程。 在顶层目录以及每层子目录下为 CodeBlocks 生成工程文件，生成的 CMakeList.txt 的特点是都包含一个 PROJECT()调用。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>CodeBlocks - Ninja：生成 CodeBlocks 工程。</li> <li>CodeBlocks - Unix Makefiles：生成 CodeBlocks 工程。 在顶层目录以及每层子目录下为 CodeBlocks 生成工程文件，生成的 CMakeList.txt 的特点是都包含一个 PROJECT()调用。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>Eclipse CDT4 - MinGW Makefiles: 生成 Eclipse CDT 4.0 工程文件。 在顶层目录下为 Eclipse 生成工程文件。在运行源码外构建时，一个连接到顶层源码路径的资源文件会被创建。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>Eclipse CDT4 - NMake Makefiles: 生成 Eclipse CDT 4.0 工程文件。 在顶层目录下为 Eclipse 生成工程文件。在运行源码外构建时，一个连接到顶层源码路径的资源文件会被创建。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>Eclipse CDT4 - NMake Makefiles：生成 Eclipse CDT 4.0 工程文件。</li> <li>Eclipse CDT4 - Ninja：生成 Eclipse CDT 4.0 工程文件。</li> <li>Eclipse CDT4 - Unix Makefiles: 生成 Eclipse CDT 4.0 工程文件。 在顶层目录下为 Eclipse 生成工程文件。在运行源码外构建时，一个连接到顶层源码路径的资源文件会被创建。除此之外还会在构建树上生成一套层次性的 makefile。通过默认的 make 目标，正确的 make 程序可以构建这个工程。makefile 还提供了 install 目标。</li> <li>KDevelop3: 生成 KDevelop 3 工程文件。</li> <li>KDevelop3 - Unix Makefiles: 生成 KDevelop 3 工程文件。</li> <li>Sublime Text 2 - MinGW Makefiles: 生成 Sublime Text 2 工程文件。</li> <li>Sublime Text 2 - NMake Makefiles: 生成 Sublime Text 2 工程文件。</li> <li>Sublime Text 2 - Ninja: 生成 Sublime Text 2 工程文件。</li> <li>Sublime Text 2 - Unix Makefiles: 生成 Sublime Text 2 工程文件。</li> </ul> </li> </ul> <h2 id="makefile">Makefile</h2>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[CMake和Makefile相关学习]]></summary></entry><entry><title type="html">Linchang Xiao’s CV</title><link href="https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv/" rel="alternate" type="text/html" title="Linchang Xiao’s CV"/><published>2023-12-26T17:39:00+00:00</published><updated>2023-12-26T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/xiaolinchang-cv/"><![CDATA[<p>Redirecting to Linchang Xiao’s CV.</p>]]></content><author><name></name></author><category term="CV"/><category term="个人信息"/><summary type="html"><![CDATA[Linchang Xiao's CV]]></summary></entry><entry><title type="html">体系结构相关技术</title><link href="https://xlcbingo1999.github.io/blog/2023/Arch/" rel="alternate" type="text/html" title="体系结构相关技术"/><published>2023-11-20T17:39:00+00:00</published><updated>2023-11-20T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/Arch</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/Arch/"><![CDATA[<h2 id="服务器查看物理cpu和逻辑cpu的情况">服务器查看物理cpu和逻辑cpu的情况</h2> <ul> <li>参考文献：<a href="https://blog.csdn.net/maizousidemao/article/details/103595846">https://blog.csdn.net/maizousidemao/article/details/103595846</a></li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
 
 cat /proc/cpuinfo| grep "cpu cores"| uniq
 
@@ -6,7 +426,7 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 
 grep 'processor' /proc/cpuinfo | sort -u | wc -l
 </code></pre></div></div>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[体系结构相关技术]]></summary></entry><entry><title type="html">博弈论</title><link href="https://xlcbingo1999.github.io/blog/2023/Game-Theory/" rel="alternate" type="text/html" title="博弈论"/><published>2023-08-10T17:39:00+00:00</published><updated>2023-08-10T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/Game-Theory</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/Game-Theory/"><![CDATA[<h2 id="基础概念">基础概念</h2> <p>Game theory翻译过来就是博弈论，其实是研究多个玩家在互相交互中取胜的方法。例如在耶鲁大学的博弈论公开课中，有一个游戏是让全班同学从0到100中选一个数，其中如果选择的数最接近所有数的平均值的三分之一则这个玩家获胜。首先大家应该不会选择比33大的数，因为其他人都选择100也不能赢不了，那么如果大家都选择比33小，自己就应该选择比11小的数，考虑到其他人也是这样想的，那么自己应该选择比11小很多的数，如果我知道别人也知道自己选择比11小很多的数的话，那应该选择更小的数。那么这个游戏的理想值是0，也就是纳什均衡点，就是当对方也是深晦游戏规则并且知道你也很懂游戏规则时做出的最优决定，当然第一次游戏大家都不是完美的决策者（或者不知道对方是不是完美的决策者），因此不一定会选择纳什均衡点，但多次游戏后结果就是最终取胜的就是非常接近0的选择。</p> <h2 id="纳什均衡点">纳什均衡点</h2> <p>所有人已经选择了对自己而言的最优解并且自己单方面做其他选择也无法再提高的点。也就是说，如果玩家都是高手，能达到或者逼近纳什均衡的策略就是最优策略，如果对手不是高手不会选择最优策略，那么纳什均衡点不一定保证每局都赢，但长远来看极大概率会赢这样的新手。</p> <h2 id="combinatorial-game">Combinatorial Game</h2> <ul> <li>满足以下环境条件可以称为Combinatorial Game <ul> <li>Zero-sum</li> <li>Perfect information</li> <li>Deterministic</li> <li>Discrete</li> <li>Sequential</li> </ul> </li> </ul> <h2 id="minmax策略">Minmax策略</h2> <ul> <li>目标是找到逼近纳什均衡的搜索策略</li> <li>从树的叶子结点开始看，如果是本方回合就选择max的，如果是对方回合就是min的，实际上这也是假设对方是聪明的也会使用minmax算法，这样在博弈论里面就达到一个纳什均衡点。</li> </ul> <h2 id="蒙特卡洛树搜索">蒙特卡洛树搜索</h2> <ul> <li>论文：A Survey of Monte Carlo Tree Search Methods http://pubs.doc.ic.ac.uk/survey-mcts-methods/survey-mcts-methods.pdf</li> <li>可以参考的源码：MCTS的完整实现代码在 tobegit3hub/ml_implementation</li> <li>基于树结构，权衡探索和利用，在搜索空间巨大的时候仍有效的搜索算法。目标是找到逼近纳什均衡的搜索策略。</li> <li>探索和利用策略： <ul> <li>得分不仅是由这个子节点最终赢的概率来，而且与这个子节点玩的次数成负相关，也就是说这个子节点如果平均得分高就约有可能选中（因为认为它比其他节点更值得利用），同时如果子节点选中次数较多则下次不太会选中（因为其他节点选择次数少更值得探索），因此MCTS根据配置探索和利用不同的权重，可以实现比随机或者其他策略更有启发式的方法。</li> <li>UCT（Upper Confidence bounds for Trees）使用的UCB算法：\(argmax_{v' \in Child(v)} \frac{Q(v')}{N(v')} + c \sqrt{\frac{2 \ln{N(v)}}{N(v')}}\)，其中v’表示当前树节点，v表示父节点，Q表示这个树节点的累计quality值，N表示这个树节点的visit次数，C是一个常量参数（可以控制exploitation和exploration权重）。这个公式的意思时，对每一个节点求一个值用于后面的选择，这个值有两部分组成，左边是这个节点的平均收益值（越高表示这个节点期望收益好，越值得选择，用于exploitation），右边的变量是这个父节点的总访问次数除以子节点的访问次数（如果子节点访问次数越少则值越大，越值得选择，用户exploration），因此使用这个公式是可以兼顾探索和利用的。c常量我们可以使用\(1/\sqrt{2}\)，这是Kocsis、Szepesvari提出的经验值</li> </ul> </li> <li>必要假设 <ul> <li>（博弈论领域假设）Zero-sum：零和博弈，所有玩家的收益之和为0，一定能分出输赢。</li> <li>（博弈论领域假设）Perfect information / Fully information：对称信息（完全信息）。 游戏的所有信息和状态都是所有玩家可以观察到的，因此双方的游戏策略只需要关注共同的状态即可。不能像打牌一样隐藏自己的手牌</li> <li>（博弈论领域假设）Determinism：确定性策略，每一个操作都没有随机因素</li> <li>（博弈论领域假设）Sequential：顺序执行，所有的操作都是顺序执行的</li> <li>（博弈论领域假设）Discrete：离散动作，没有一个动作是连续值</li> <li>（优化领域假设）Black box optimization：黑盒优化，类似多臂老虎机，不能通过求导或者凸优化方法找到最优解，否则使用MCTS也是没有意义。【机器学习就是典型的优化过程，但我们用的机器学习算法如LR、SVM、DNN都不是黑盒，而是根据数学公式推导通过对函数求导等方式进行的优化。如果我们能把问题描述成一个函数或者凸优化问题，那么我们通过数学上的求导就可以找到最优解，这类问题并不需要用到MCTS等搜索算法，但实际上很多问题例如围棋就无法找到一个描述输赢的函数曲线，这样就无法通过纯数学的方法解决。】【这类问题统称为黑盒优化问题，我们不能假设知道这个场景内部的函数或者模型结构，只能通过给定模型输入得到模型输出结果来优化。例如多臂老虎机（Multi-arm Bandit）问题，我们有多台老虎机可以投币，但不知道每一台输赢的概率，只能通过多次投币来测试，根据观察的结果预估每台机器的收益分布，最终选择认为收益最大的，这种方法一般会比随机方法效果好。】【黑盒优化的算法也有很多，例如进化算法、贝叶斯优化、MCTS也算是，而这些算法都需要解决如何权衡探索和利用（Exploration and Exploitation）的问题。】</li> </ul> </li> <li>流程：通过不断的模拟得到大部分节点的UCB值，然后下次模拟的时候根据UCB值有策略得选择值得利用和值得探索的节点继续模拟，在搜索空间巨大并且计算能力有限的情况下，这种启发式搜索能更集中地、更大概率找到一些更好的节点。 <ul> <li>Selection：在树中找到一个最好的值得探索的节点，一般策略是先选择未被探索的子节点，如果都探索过就选择UCB值最大的子节点。</li> <li>Expansion：在前面选中的子节点中走一步创建一个新的子节点，一般策略是随机执行一个操作并且这个操作不能与前面的子节点重复。</li> <li>Simulation：在前面新Expansion出来的节点开始模拟游戏，直到到达游戏结束状态，这样可以收到到这个expansion出来的节点的得分是多少。</li> <li>Backpropagation：把前面expansion出来的节点得分反馈到前面所有父节点中，更新这些节点的quality value和visit times，方便后面计算UCB值。</li> <li>源代码：其中TREE_POLICY就是实现了Selection和和Expansion两个阶段，DEFAULT_POLICY实现了Simulation阶段，BACKUP实现了Backpropagation阶段。</li> </ul> </li> <li>AlphaGo算法对MCTS算法的优化 <ul> <li>利用policy network的输出替换UCB的父节点访问次数，同样使用子节点访问次数作为分母保证exploration</li> <li>Q值改为快速走子网络得到的所有叶子节点的均值，神经网络改成ResNet</li> <li>首先，AlphaGo每个节点可选action太多了，selection阶段不能像前面先遍历完所有子节点再expansion，这里是用改进的UCB算法来找到最优的需要expansion子节点，算法基本类似也是有控制exploration/exploitation的常量C并且与该子节点visit times成反比。</li> <li>其次，进行expansion时不会像前面这样直接random选择任意的action，而是这里也考虑到exploration/exploitation，一般前30步根据visit times成正比来选择，这样可以尽可能得先探索（根节点加入了狄利克雷分布保证所有点都经过），后面主要是根据visit times来走了。</li> <li>第三，新版AlphaGo Zero去掉了基于handcraft规则的rollout policy，也就是快速走子网络，以前是必须有快速走子直到完成比赛才能得到反馈，现在是直接基于神经网络计算预估的winer value概率值，然后平均得到每个子节点的state-action value也就是Q值。</li> <li>第四，AlphaGo在MCTS基础上收集最终的比赛结果作为label，MCTS作为policy evalution和policy iteration来实现增强学习。</li> </ul> </li> </ul> <h2 id="counterfactual-regret">Counterfactual Regret</h2> <ul> <li>适用于非信息对称游戏（Imperfect information / Partial information），目标是找到逼近纳什均衡的搜索策略</li> <li>德州扑克AI的常见算法</li> </ul>]]></content><author><name></name></author><category term="理论类笔记"/><category term="理论类笔记"/><summary type="html"><![CDATA[Game Theory]]></summary></entry><entry><title type="html">FFmpeg 相关技术</title><link href="https://xlcbingo1999.github.io/blog/2023/FFmpeg/" rel="alternate" type="text/html" title="FFmpeg 相关技术"/><published>2023-06-10T17:39:00+00:00</published><updated>2023-06-10T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/FFmpeg</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/FFmpeg/"><![CDATA[<h2 id="ffmpeg-相关技术">FFmpeg 相关技术</h2> <ul> <li>要使用 ffmpeg 将视频分解为帧，并控制生成的帧数，您可以使用 -vf （Video Filter）选项来设置帧率。例如，如果要将一个 10 秒的视频分解为只包含 200 帧的图像序列，可以使用以下命令： <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg -i input_video.mp4 -vf "fps=20" image-%03d.png
-</code></pre></div> </div> </li> </ul> <p>这个命令的各个部分的含义如下：</p> <ul> <li>-i input_video.mp4: 这是输入文件的参数，input_video.mp4 应该替换为您要处理的视频文件的文件名。</li> <li>-vf “fps=20”: 这是视频过滤器选项，它告诉 ffmpeg 将帧率设置为 20 帧每秒（或者根据您的需求设置不同的帧率，以便得到所需数量的帧）。</li> <li>image-%03d.png: 这是输出图像文件的名称模板。%03d 表示帧序号，它将被替换为三位数字，例如 001、002、003，以便为生成的图像文件命名。 运行这个命令将把输入视频分解为指定帧率的图像序列，以满足您需要的帧数。在上面的示例中，帧率设置为 20 帧每秒，因此生成 10 秒视频的图像序列将包含 200 帧。</li> </ul>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[FFmpeg 相关技术]]></summary></entry><entry><title type="html">Online algorithm Efficient Optimization under Uncertainty</title><link href="https://xlcbingo1999.github.io/blog/2023/online-algorithms/" rel="alternate" type="text/html" title="Online algorithm Efficient Optimization under Uncertainty"/><published>2023-04-06T17:39:00+00:00</published><updated>2023-04-06T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/online-algorithms</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/online-algorithms/"><![CDATA[<p>Redirecting to online algorithms.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Introduction of Online algorithm]]></summary></entry><entry><title type="html">C++/Go算法学习</title><link href="https://xlcbingo1999.github.io/blog/2023/cpp-go-learning/" rel="alternate" type="text/html" title="C++/Go算法学习"/><published>2023-03-30T17:39:00+00:00</published><updated>2023-03-30T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/cpp-go-learning</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/cpp-go-learning/"><![CDATA[<h2 id="c-基础">C++ 基础</h2> <h3 id="class-中的变量权限">class 中的变量权限</h3> <ul> <li>类的一个特征就是<strong>封装</strong>，public 和 private 作用就是实现这一目的。类的另一个特征就是<strong>继承</strong>，protected 的作用就是实现这一目的 <ul> <li>public：用户代码（类外）可以访问 public 成员而不能访问 private 成员</li> <li>protected：protected 成员可以被派生类对象访问，不能被用户代码（类外）访问</li> <li>private：private 成员只能由类成员（类内）和友元访问。</li> </ul> </li> </ul> <h3 id="inline">inline</h3> <h3 id="c-中的函数调用">C++ 中的函数调用</h3> <ul> <li>当程序执行函数调用指令时，CPU 将存储该函数调用后指令的内存地址，将函数的参数复制到堆栈上，最后将控制权转移到指定的函数。然后，CPU 执行函数代码，将函数返回值存储在预定义的内存位置/寄存器中，并将控制权返回给调用函数。</li> <li> <p>时间消耗分析</p> <ul> <li>调用者函数到被调用者的切换时间</li> <li>函数执行时间</li> </ul> </li> </ul> <h2 id="cmake">CMake</h2> <h3 id="cmake-通常的-build-和编译位置">CMake 通常的 build 和编译位置</h3> <ul> <li>参考文献：<a href="https://blog.csdn.net/shaoyou223/article/details/84764633">https://blog.csdn.net/shaoyou223/article/details/84764633</a></li> </ul> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mkdir</span> <span class="n">build</span>
+</code></pre></div> </div> </li> </ul> <p>这个命令的各个部分的含义如下：</p> <ul> <li>-i input_video.mp4: 这是输入文件的参数，input_video.mp4 应该替换为您要处理的视频文件的文件名。</li> <li>-vf “fps=20”: 这是视频过滤器选项，它告诉 ffmpeg 将帧率设置为 20 帧每秒（或者根据您的需求设置不同的帧率，以便得到所需数量的帧）。</li> <li>image-%03d.png: 这是输出图像文件的名称模板。%03d 表示帧序号，它将被替换为三位数字，例如 001、002、003，以便为生成的图像文件命名。 运行这个命令将把输入视频分解为指定帧率的图像序列，以满足您需要的帧数。在上面的示例中，帧率设置为 20 帧每秒，因此生成 10 秒视频的图像序列将包含 200 帧。</li> </ul>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[FFmpeg 相关技术]]></summary></entry><entry><title type="html">Online algorithm Efficient Optimization under Uncertainty</title><link href="https://xlcbingo1999.github.io/blog/2023/online-algorithms/" rel="alternate" type="text/html" title="Online algorithm Efficient Optimization under Uncertainty"/><published>2023-04-06T17:39:00+00:00</published><updated>2023-04-06T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/online-algorithms</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/online-algorithms/"><![CDATA[<p>Redirecting to online algorithms.</p>]]></content><author><name></name></author><category term="Slide"/><category term="理论类笔记"/><summary type="html"><![CDATA[Introduction of Online algorithm]]></summary></entry><entry><title type="html">C++/Go算法学习</title><link href="https://xlcbingo1999.github.io/blog/2023/cpp-go-learning/" rel="alternate" type="text/html" title="C++/Go算法学习"/><published>2023-03-30T17:39:00+00:00</published><updated>2023-03-30T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2023/cpp-go-learning</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2023/cpp-go-learning/"><![CDATA[<h2 id="c-基础">C++ 基础</h2> <h3 id="class-中的变量权限">class 中的变量权限</h3> <ul> <li>类的一个特征就是<strong>封装</strong>，public 和 private 作用就是实现这一目的。类的另一个特征就是<strong>继承</strong>，protected 的作用就是实现这一目的 <ul> <li>public：用户代码（类外）可以访问 public 成员而不能访问 private 成员</li> <li>protected：protected 成员可以被派生类对象访问，不能被用户代码（类外）访问</li> <li>private：private 成员只能由类成员（类内）和友元访问。</li> </ul> </li> </ul> <h3 id="inline">inline</h3> <h3 id="c-中的函数调用">C++ 中的函数调用</h3> <ul> <li>当程序执行函数调用指令时，CPU 将存储该函数调用后指令的内存地址，将函数的参数复制到堆栈上，最后将控制权转移到指定的函数。然后，CPU 执行函数代码，将函数返回值存储在预定义的内存位置/寄存器中，并将控制权返回给调用函数。</li> <li> <p>时间消耗分析</p> <ul> <li>调用者函数到被调用者的切换时间</li> <li>函数执行时间</li> </ul> </li> </ul> <h2 id="cmake">CMake</h2> <h3 id="cmake-通常的-build-和编译位置">CMake 通常的 build 和编译位置</h3> <ul> <li>参考文献：<a href="https://blog.csdn.net/shaoyou223/article/details/84764633">https://blog.csdn.net/shaoyou223/article/details/84764633</a></li> </ul> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mkdir</span> <span class="n">build</span>
 <span class="n">cd</span> <span class="n">build</span>
 <span class="n">cmake</span> <span class="p">..</span>
 <span class="n">make</span>
@@ -1569,7 +1989,7 @@ struct TreeNode {
     <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">sol</span><span class="o">-&gt;</span><span class="n">pseudoPalindromicPaths</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
     <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[C++/Go算法学习 - 整个文档偏算法]]></summary></entry><entry><title type="html">Approximation algorithm</title><link href="https://xlcbingo1999.github.io/blog/2022/approximation-algorithms/" rel="alternate" type="text/html" title="Approximation algorithm"/><published>2022-10-27T17:39:00+00:00</published><updated>2022-10-27T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2022/approximation-algorithms</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2022/approximation-algorithms/"><![CDATA[<p>Redirecting to online algorithms.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Introduction of Approximation algorithm]]></summary></entry><entry><title type="html">集合相似性</title><link href="https://xlcbingo1999.github.io/blog/2022/Metric/" rel="alternate" type="text/html" title="集合相似性"/><published>2022-09-09T17:39:00+00:00</published><updated>2022-09-09T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2022/Metric</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2022/Metric/"><![CDATA[<ul> <li>集合相似性度量方式： <ul> <li>参考文献（日本）：<a href="https://www.cnblogs.com/bristlegrass/p/11546432.html">https://www.cnblogs.com/bristlegrass/p/11546432.html</a></li> <li>参考文献（日本）：<a href="https://mieruca-ai.com/ai/jaccard_dice_simpson">https://mieruca-ai.com/ai/jaccard_dice_simpson</a></li> </ul> </li> <li>向量相似性度量方式： <ul> <li>欧式距离</li> <li>曼哈顿距离</li> <li>切比雪夫距离</li> <li>⻢哈拉诺⽐斯距离【马氏距离（Mahalanobis Distance）是由马哈拉诺比斯（P. C. Mahalanobis）提出的，表示数据的协方差距离。它是一种有效的计算两个未知样本集的相似度的方法。与欧氏距离不同的是它考虑到各种特性之间的联系（例如：一条关于身高的信息会带来一条关于体重的信息，因为两者是有关联的）并且是尺度无关的（scale-invariant），即独立于测量尺度。】 <a href="https://blog.csdn.net/fu_jian_ping/article/details/111877248">https://blog.csdn.net/fu_jian_ping/article/details/111877248</a></li> <li>SMC（用于bool向量）</li> </ul> </li> <li>信息量 <ul> <li>概率越小，包含的信息越多</li> <li>将概率换成频率后，可以衡量一个数据表的信息量</li> </ul> </li> </ul>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[集合相似性]]></summary></entry><entry><title type="html">Linux 相关指令</title><link href="https://xlcbingo1999.github.io/blog/2021/Linux/" rel="alternate" type="text/html" title="Linux 相关指令"/><published>2021-10-10T17:39:00+00:00</published><updated>2021-10-10T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2021/Linux</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2021/Linux/"><![CDATA[<h2 id="linux-原生">Linux 原生</h2> <h3 id="性能检查工具">性能检查工具</h3> <ul> <li> <p>最常用的几个命令：</p> <ul> <li>参考文献：<a href="https://www.jianshu.com/p/3422ea8ad008">https://www.jianshu.com/p/3422ea8ad008</a></li> <li>Top</li> <li>Htop： 检查进程和内存占用</li> </ul> </li> <li> <p>检查进程</p> <ul> <li>参考文献：<a href="https://cloud.tencent.com/developer/article/1711858">https://cloud.tencent.com/developer/article/1711858</a></li> </ul> </li> </ul> <h3 id="开机自启动指令">开机自启动指令</h3> <ul> <li><a href="https://blog.csdn.net/tuzixini/article/details/95616333">Ubuntu/Linux 开机运行指定的命令/自动运行命令_tuzixini 的博客-CSDN 博客_ubuntu 开机自动运行命令</a></li> </ul> <h3 id="关闭开启自动更新">关闭/开启自动更新</h3> <ul> <li><a href="https://blog.csdn.net/davidhzq/article/details/102651588">怎么禁止/开启 Ubuntu 自动更新升级_豆豆技术派的博客-CSDN 博客</a></li> </ul> <h3 id="服务器文件夹共享远程文件夹">服务器文件夹共享/远程文件夹</h3> <ul> <li>参考文献：<a href="https://blog.csdn.net/b876144622/article/details/79871132">两台 ubuntu 服务器文件共享_keep_forward 的博客-CSDN 博客_2 台 ubuntu 映射共享文件夹</a></li> </ul> <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span> <span class="nt">挂载</span>
+</code></pre></div></div>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[C++/Go算法学习 - 整个文档偏算法]]></summary></entry><entry><title type="html">Approximation algorithm</title><link href="https://xlcbingo1999.github.io/blog/2022/approximation-algorithms/" rel="alternate" type="text/html" title="Approximation algorithm"/><published>2022-10-27T17:39:00+00:00</published><updated>2022-10-27T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2022/approximation-algorithms</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2022/approximation-algorithms/"><![CDATA[<p>Redirecting to online algorithms.</p>]]></content><author><name></name></author><category term="Slide"/><category term="理论类笔记"/><summary type="html"><![CDATA[Introduction of Approximation algorithm]]></summary></entry><entry><title type="html">集合相似性</title><link href="https://xlcbingo1999.github.io/blog/2022/Metric/" rel="alternate" type="text/html" title="集合相似性"/><published>2022-09-09T17:39:00+00:00</published><updated>2022-09-09T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2022/Metric</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2022/Metric/"><![CDATA[<ul> <li>集合相似性度量方式： <ul> <li>参考文献（日本）：<a href="https://www.cnblogs.com/bristlegrass/p/11546432.html">https://www.cnblogs.com/bristlegrass/p/11546432.html</a></li> <li>参考文献（日本）：<a href="https://mieruca-ai.com/ai/jaccard_dice_simpson">https://mieruca-ai.com/ai/jaccard_dice_simpson</a></li> </ul> </li> <li>向量相似性度量方式： <ul> <li>欧式距离</li> <li>曼哈顿距离</li> <li>切比雪夫距离</li> <li>⻢哈拉诺⽐斯距离【马氏距离（Mahalanobis Distance）是由马哈拉诺比斯（P. C. Mahalanobis）提出的，表示数据的协方差距离。它是一种有效的计算两个未知样本集的相似度的方法。与欧氏距离不同的是它考虑到各种特性之间的联系（例如：一条关于身高的信息会带来一条关于体重的信息，因为两者是有关联的）并且是尺度无关的（scale-invariant），即独立于测量尺度。】 <a href="https://blog.csdn.net/fu_jian_ping/article/details/111877248">https://blog.csdn.net/fu_jian_ping/article/details/111877248</a></li> <li>SMC（用于bool向量）</li> </ul> </li> <li>信息量 <ul> <li>概率越小，包含的信息越多</li> <li>将概率换成频率后，可以衡量一个数据表的信息量</li> </ul> </li> </ul>]]></content><author><name></name></author><category term="技术杂记"/><category term="技术杂记"/><summary type="html"><![CDATA[集合相似性]]></summary></entry><entry><title type="html">Linux 相关指令</title><link href="https://xlcbingo1999.github.io/blog/2021/Linux/" rel="alternate" type="text/html" title="Linux 相关指令"/><published>2021-10-10T17:39:00+00:00</published><updated>2021-10-10T17:39:00+00:00</updated><id>https://xlcbingo1999.github.io/blog/2021/Linux</id><content type="html" xml:base="https://xlcbingo1999.github.io/blog/2021/Linux/"><![CDATA[<h2 id="linux-原生">Linux 原生</h2> <h3 id="性能检查工具">性能检查工具</h3> <ul> <li> <p>最常用的几个命令：</p> <ul> <li>参考文献：<a href="https://www.jianshu.com/p/3422ea8ad008">https://www.jianshu.com/p/3422ea8ad008</a></li> <li>Top</li> <li>Htop： 检查进程和内存占用</li> </ul> </li> <li> <p>检查进程</p> <ul> <li>参考文献：<a href="https://cloud.tencent.com/developer/article/1711858">https://cloud.tencent.com/developer/article/1711858</a></li> </ul> </li> </ul> <h3 id="开机自启动指令">开机自启动指令</h3> <ul> <li><a href="https://blog.csdn.net/tuzixini/article/details/95616333">Ubuntu/Linux 开机运行指定的命令/自动运行命令_tuzixini 的博客-CSDN 博客_ubuntu 开机自动运行命令</a></li> </ul> <h3 id="关闭开启自动更新">关闭/开启自动更新</h3> <ul> <li><a href="https://blog.csdn.net/davidhzq/article/details/102651588">怎么禁止/开启 Ubuntu 自动更新升级_豆豆技术派的博客-CSDN 博客</a></li> </ul> <h3 id="服务器文件夹共享远程文件夹">服务器文件夹共享/远程文件夹</h3> <ul> <li>参考文献：<a href="https://blog.csdn.net/b876144622/article/details/79871132">两台 ubuntu 服务器文件共享_keep_forward 的博客-CSDN 博客_2 台 ubuntu 映射共享文件夹</a></li> </ul> <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span> <span class="nt">挂载</span>
 <span class="nt">sudo</span> <span class="nt">mount</span> <span class="nt">-t</span> <span class="nt">nfs</span>  <span class="err">10</span><span class="nc">.xxx.xxx.xxx</span><span class="o">:/</span><span class="nt">path-to-share</span> <span class="o">/</span><span class="nt">path-to-mount</span>
 <span class="err">#</span> <span class="nt">取消挂载</span>
 <span class="nt">sudo</span> <span class="nt">unmount</span><span class="nc">.nfs</span> <span class="o">/</span><span class="nt">path-to-mount</span>
