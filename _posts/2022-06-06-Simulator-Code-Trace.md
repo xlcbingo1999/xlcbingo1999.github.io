@@ -5,7 +5,7 @@ date: 2023-08-10 17:39:00
 description: 任务调度场景中的模拟器、源代码与数据集 Trace 汇总
 tags: 系统-ML任务级调度论文集合
 categories: 开源资源汇总文档
-featured: false
+featured: true
 ---
 
 ## 开源代码集合
