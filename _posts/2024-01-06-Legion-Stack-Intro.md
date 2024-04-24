@@ -6,6 +6,7 @@ description: Introduction of Legion Software Stack
 redirect: assets/pdf/Legion_Stack_Intro.pdf
 tags: 系统类笔记
 categories: Slide
+featured: true
 ---
 
 Redirecting to Introduction of Legion Software Stack.
