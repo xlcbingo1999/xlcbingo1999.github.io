@@ -1,1 +1,465 @@
-<!DOCTYPE html> <html lang="cn"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta http-equiv="refresh" content="3; url=/"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title>CGraph源码导读与线程池优化研读 | Linchang Xiao</title> <meta name="author" content="Linchang Xiao"> <meta name="description" content="CGraph源码导读与线程池优化研读"> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <link rel="stylesheet" href="/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css"> <link rel="stylesheet" href="/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5"> <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons"> <link rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?19f3075a2d19613090fe9e16b564e1fe" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/icon.jpg?7b7b29ac9f6063e03543e5148578c7f5"> <link rel="stylesheet" href="/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e"> <link rel="canonical" href="https://xlcbingo1999.github.io/blog/2024/CGraph/"> <link rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?e74e74bf055e5729d44a7d031a5ca6a5" media="none" id="highlight_theme_dark"> <script src="/assets/js/theme.js?6185d15ea1982787ad7f435576553d64"></script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"><span class="font-weight-bold">Linchang </span>Xiao</a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about</a> </li> <li class="nav-item "> <a class="nav-link" href="/blog/">blog</a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">publications</a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">projects</a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">cv</a> </li> <li class="nav-item "> <a class="nav-link" href="/repositories/">repositories</a> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="fa-solid fa-moon"></i> <i class="fa-solid fa-sun"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5"> <div class="post"> <header class="post-header"> <h1 class="post-title">CGraph源码导读与线程池优化研读</h1> <p class="post-meta">April 23, 2024</p> <p class="post-tags"> <a href="/blog/2024"> <i class="fa-solid fa-calendar fa-sm"></i> 2024 </a>   ·   <a href="/blog/tag/%E7%B3%BB%E7%BB%9F-%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97"> <i class="fa-solid fa-hashtag fa-sm"></i> 系统-高性能计算</a>     ·   <a href="/blog/category/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%BA%90%E7%A0%81"> <i class="fa-solid fa-tag fa-sm"></i> 开源项目源码</a>   </p> </header> <article class="post-content"> <div id="markdown-content"> <p>Redirecting to CGraph源码导读与线程池优化研读</p> </div> </article> </div> </div> <footer class="fixed-bottom"> <div class="container mt-0"> © Copyright 2024 Linchang Xiao. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script> <script defer src="/assets/js/masonry.js" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.8/dist/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?7b30caa5023af4af8408a472dc4e1ebb"></script> <script defer src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script> <script src="/assets/js/no_defer.js?d633890033921b33e0ceb13d22340a9c"></script> <script defer src="/assets/js/common.js?acdb9690d7641b2f8d40529018c71a01"></script> <script defer src="/assets/js/copy_code.js?9b43d6e67ddc7c0855b1478ee4c48c2d" type="text/javascript"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script type="text/javascript">window.MathJax={tex:{tags:"ams"}};</script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script> <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script type="text/javascript">function progressBarSetup(){"max"in document.createElement("progress")?(initializeProgressElement(),$(document).on("scroll",function(){progressBar.attr({value:getCurrentScrollPosition()})}),$(window).on("resize",initializeProgressElement)):(resizeProgressBar(),$(document).on("scroll",resizeProgressBar),$(window).on("resize",resizeProgressBar))}function getCurrentScrollPosition(){return $(window).scrollTop()}function initializeProgressElement(){let e=$("#navbar").outerHeight(!0);$("body").css({"padding-top":e}),$("progress-container").css({"padding-top":e}),progressBar.css({top:e}),progressBar.attr({max:getDistanceToScroll(),value:getCurrentScrollPosition()})}function getDistanceToScroll(){return $(document).height()-$(window).height()}function resizeProgressBar(){progressBar.css({width:getWidthPercentage()+"%"})}function getWidthPercentage(){return getCurrentScrollPosition()/getDistanceToScroll()*100}const progressBar=$("#progress");window.onload=function(){setTimeout(progressBarSetup,50)};</script> </body> </html>
+<!DOCTYPE html> <html lang="cn"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title>CGraph源码导读与线程池优化研读 | Linchang Xiao</title> <meta name="author" content="Linchang Xiao"> <meta name="description" content="CGraph源码导读与线程池优化研读"> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <link rel="stylesheet" href="/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css"> <link rel="stylesheet" href="/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5"> <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons"> <link rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?19f3075a2d19613090fe9e16b564e1fe" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/icon.jpg?7b7b29ac9f6063e03543e5148578c7f5"> <link rel="stylesheet" href="/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e"> <link rel="canonical" href="https://xlcbingo1999.github.io/blog/2024/CGraph/"> <link rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?e74e74bf055e5729d44a7d031a5ca6a5" media="none" id="highlight_theme_dark"> <script src="/assets/js/theme.js?6185d15ea1982787ad7f435576553d64"></script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"><span class="font-weight-bold">Linchang </span>Xiao</a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about</a> </li> <li class="nav-item "> <a class="nav-link" href="/blog/">blog</a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">publications</a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">projects</a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">cv</a> </li> <li class="nav-item "> <a class="nav-link" href="/repositories/">repositories</a> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="fa-solid fa-moon"></i> <i class="fa-solid fa-sun"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5"> <div class="post"> <header class="post-header"> <h1 class="post-title">CGraph源码导读与线程池优化研读</h1> <p class="post-meta">April 23, 2024</p> <p class="post-tags"> <a href="/blog/2024"> <i class="fa-solid fa-calendar fa-sm"></i> 2024 </a>   ·   <a href="/blog/tag/%E7%B3%BB%E7%BB%9F-%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97"> <i class="fa-solid fa-hashtag fa-sm"></i> 系统-高性能计算</a>     ·   <a href="/blog/category/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%BA%90%E7%A0%81"> <i class="fa-solid fa-tag fa-sm"></i> 开源项目源码</a>   </p> </header> <article class="post-content"> <div id="markdown-content"> <blockquote> <p>更好的排版请阅读: https://we5lw6jk7r.feishu.cn/wiki/IhxUwMQ0gi8SjbkeIFyctZusnoc?from=from_copylink</p> </blockquote> <h1 id="cgraph">CGraph</h1> <h1 id="核心主工程代码">核心主工程代码</h1> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/OsNPbkXWBojXpDxKao3csBoDn3d-480.webp 480w, /assets/img/feishu_docs_static/OsNPbkXWBojXpDxKao3csBoDn3d-800.webp 800w, /assets/img/feishu_docs_static/OsNPbkXWBojXpDxKao3csBoDn3d-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/OsNPbkXWBojXpDxKao3csBoDn3d.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/EJiKbjhCpoaDIIxG0lScn3Oknid-480.webp 480w, /assets/img/feishu_docs_static/EJiKbjhCpoaDIIxG0lScn3Oknid-800.webp 800w, /assets/img/feishu_docs_static/EJiKbjhCpoaDIIxG0lScn3Oknid-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/EJiKbjhCpoaDIIxG0lScn3Oknid.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="gpipeline-表示一个任务流的核心数据结构">GPipeline: 表示一个任务流的核心数据结构</h2> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_class_</span> <span class="n">GPipeline</span> <span class="o">:</span> <span class="n">_public_</span> <span class="n">CObject</span> <span class="p">{</span>
+
+<span class="nl">_public:</span><span class="n">_</span>
+    <span class="cm">/**
+     * 初始化pipeline信息
+     * _@return_
+     */</span>
+    <span class="n">CSTATUS</span> <span class="n">init</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+
+    <span class="cm">/**
+     * 执行pipeline信息
+     * _@return_
+     */</span>
+    <span class="n">CSTATUS</span> <span class="n">run</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+
+    <span class="cm">/**
+     * 逆初始化pipeline信息
+     * _@return_
+     */</span>
+    <span class="n">CSTATUS</span> <span class="n">deinit</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+
+    <span class="cm">/**
+     * 一次性执行完成初始化，执行runTimes次，和逆初始化的过程
+     * _@param_ _runTimes_
+     * _@return_
+     */</span>
+    <span class="n">CSTATUS</span> <span class="n">process</span><span class="p">(</span><span class="n">_int_</span> <span class="n">_runTimes_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="cm">/**
+     * 根据传入的info信息，创建node节点
+     * _@tparam_ T
+     * _@param_ _info_
+     * _@return_
+     */</span>
+    <span class="n">_template_</span><span class="o">&lt;</span><span class="n">_typename_</span> <span class="n">T</span><span class="o">&gt;</span>
+    <span class="n">GElementPtr</span> <span class="n">createGNode</span><span class="p">(</span><span class="k">const</span> <span class="n">GNodeInfo</span> <span class="o">&amp;</span><span class="n">_info_</span><span class="p">);</span>
+
+    <span class="cm">/**
+     * 根据传入的信息，创建Group信息
+     * _@tparam_ T
+     * _@param_ _elements_
+     * _@param_ _dependElements_
+     * _@param_ _name_
+     * _@param_ _loop_
+     * _@return_
+     */</span>
+    <span class="n">_template_</span><span class="o">&lt;</span><span class="n">_typename_</span> <span class="n">T</span><span class="o">&gt;</span>
+    <span class="n">GElementPtr</span> <span class="n">createGGroup</span><span class="p">(</span><span class="k">const</span> <span class="n">GElementPtrArr</span> <span class="o">&amp;</span><span class="n">_elements_</span><span class="p">,</span>
+                             <span class="k">const</span> <span class="n">GElementPtrSet</span> <span class="o">&amp;</span><span class="n">_dependElements_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">GElementPtr</span><span class="o">&gt;</span><span class="p">(),</span>
+                             <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">_name_</span> <span class="o">=</span> <span class="s">""</span><span class="p">,</span>
+                             <span class="n">_int_</span> <span class="n">_loop_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="cm">/**
+     * 在图中注册一个Element信息
+     * 如果注册的是可执行节点，则内部自动生成；如果注册的是不可执行节点（如region或cluster），则需外部提前生成，然后注册进来
+     * _@tparam_ T
+     * _@param_ _elementRef_
+     * _@param_ _dependElements_
+     * _@param_ _name_
+     * _@param_ _loop_
+     * _@return_
+     */</span>
+    <span class="n">_template_</span><span class="o">&lt;</span><span class="n">_typename_</span> <span class="n">T</span><span class="o">&gt;</span>
+    <span class="n">CSTATUS</span> <span class="n">registerGElement</span><span class="p">(</span><span class="n">GElementPtr</span> <span class="o">*</span><span class="n">_elementRef_</span><span class="p">,</span>
+                             <span class="k">const</span> <span class="n">GElementPtrSet</span> <span class="o">&amp;</span><span class="n">_dependElements_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">GElementPtr</span><span class="o">&gt;</span><span class="p">(),</span>
+                             <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">_name_</span> <span class="o">=</span> <span class="s">""</span><span class="p">,</span>
+                             <span class="n">_int_</span> <span class="n">_loop_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="nl">_protected:</span><span class="n">_</span>
+    <span class="k">explicit</span> <span class="n">GPipeline</span><span class="p">();</span>
+
+    <span class="o">~</span><span class="n">GPipeline</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>
+
+    <span class="cm">/**
+     * element元素，添加依赖节点信息
+     * _@param_ _element_
+     * _@param_ _dependElements_
+     * _@return_
+     */</span>
+    <span class="n">CSTATUS</span> <span class="n">addDependElements</span><span class="p">(</span><span class="n">GElementPtr</span> <span class="n">_element_</span><span class="p">,</span>
+                              <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">GElementPtr</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">_dependElements_</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="nl">_private:</span><span class="n">_</span>
+    <span class="n">_bool_</span> <span class="n">is_init_</span><span class="p">;</span>                                       <span class="c1">// 标志位</span>
+    <span class="n">GElementManagerPtr</span> <span class="n">element_manager_</span><span class="p">;</span>                 <span class="c1">// 节点管理类（管理所有注册过的element信息）</span>
+    <span class="n">GraphThreadPoolPtr</span> <span class="n">thread_pool_</span><span class="p">;</span>                     <span class="c1">// 线程池类</span>
+    <span class="n">GElementPtrSet</span> <span class="n">element_repository_</span><span class="p">;</span>                  <span class="c1">// 标记创建的所有节点，最终释放使用</span>
+    <span class="n">GParamManagerPtr</span> <span class="n">param_manager_</span><span class="p">;</span>
+
+    <span class="k">friend</span> <span class="n">_class_</span> <span class="n">GPipelineFactory</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <h3 id="工厂类-gpipelinefactory-基于工厂模式来生成对应的-pipeline-并用于保存-pipeline-内容">工厂类 GPipelineFactory: 基于工厂模式来生成对应的 Pipeline, 并用于保存 pipeline 内容</h3> <ul> <li>工厂模式的代码其实都可以用 static 去实现，连保存的 Pipeline 列表也要用 static 存储，可以实现全局共享！</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_class_</span> <span class="n">GPipelineFactory</span> <span class="o">:</span> <span class="n">_public_</span> <span class="n">CObject</span> <span class="p">{</span>
+
+<span class="nl">_public:</span><span class="n">_</span>
+    <span class="cm">/**
+     * 创建一个pipeline信息
+     * _@return_
+     */</span>
+    <span class="k">static</span> <span class="n">GPipelinePtr</span> <span class="n">create</span><span class="p">();</span>
+
+    <span class="cm">/**
+     * 销毁一个pipeline信息
+     * _@return_
+     */</span>
+    <span class="k">static</span> <span class="n">_void_</span> <span class="n">destroy</span><span class="p">(</span><span class="n">GPipelinePtr</span> <span class="n">_pipeline_</span><span class="p">);</span>
+
+    <span class="cm">/**
+     * 清空所有的pipeline信息
+     */</span>
+    <span class="k">static</span> <span class="n">_void_</span> <span class="n">clear</span><span class="p">();</span>
+
+<span class="nl">_protected:</span><span class="n">_</span>
+    <span class="n">CSTATUS</span> <span class="n">run</span><span class="p">();</span>
+    <span class="n">GPipelineFactory</span><span class="p">();</span>
+
+<span class="nl">_private:</span><span class="n">_</span>
+    <span class="k">static</span> <span class="n">GPipelinePtrList</span> <span class="n">pipeline_list_</span><span class="p">;</span>    <span class="c1">// 记录所有的</span>
+    <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">lock_</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <h3 id="函数-registergelement用于注册一个新的-element-节点到-element_manager_中">函数 registerGElement()：用于注册一个新的 Element 节点到 element_manager_中</h3> <ul> <li>先判断 Element 是否存在于 element_manager_，如果存在就要删掉，然后重新进行生成</li> <li>设置当前 Element 节点的 ParamManager，每个 Pipeline 只有一个 ParamManager</li> <li>传入 name 表示当前节点的名字</li> <li>传入 loop 表示当前节点需要被循环遍历的次数</li> <li> <p>【核心功能】传入依赖的 element 集合，然后在 DAG 图中将这些依赖的 element 进行处理</p> <ul> <li>无法依赖空的 element</li> <li>无法依赖自身 element</li> <li>需要将被依赖的 element 的 run_before_（set&lt;GElement*&gt;）数据结构中加入当前的 element</li> <li>需要在当前 element 中加入被依赖的 element</li> <li>最后对当前的 element 设定 left_depend_字段，表示距离这个 element 可以执行还有多少任务的依赖！</li> </ul> <div class="language-cpp highlighter-rouge"> <div class="highlight"><pre class="highlight"><code></code></pre></div> </div> </li> </ul> <p>CSTATUS GPipeline::addDependElements(GElementPtr <em>element</em>, const std::set<gelementptr>&amp; _dependElements_) const { CGRAPH_FUNCTION_BEGIN</gelementptr></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// TODO 这个功能可以下沉到element里去实现
+CGRAPH_ASSERT_INIT(false)
+CGRAPH_ASSERT_NOT_NULL(_element_)
+
+for (GElementPtr cur : _dependElements_) {
+    // 如果传入的信息中，有nullptr，则所有的信息均不参与计算
+    CGRAPH_ASSERT_NOT_NULL(cur);
+}
+
+for (GElementPtr cur : _dependElements_) {
+    if (cur == _element_) {
+        continue;        // 本节点无法依赖本节点
+    }
+
+    cur-&gt;run_before_.insert(_element_);
+    _element_-&gt;dependence_.insert(cur);
+}
+
+_element_-&gt;left_depend_ = _element_-&gt;dependence_.size();
+
+CGRAPH_FUNCTION_END
+</code></pre></div></div> <p>}</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+- 在element_manager_中加入当前element
+
+- 在element_repository_中加入当前的element
+
+```cpp
+_template_&lt;_typename_ T&gt;
+CSTATUS GPipeline::registerGElement(GElementPtr *_elementRef_,
+                                    const GElementPtrSet &amp;_dependElements_,
+                                    const std::string &amp;_name_,
+                                    _int_ _loop_) {
+    CGRAPH_FUNCTION_BEGIN
+    CGRAPH_ASSERT_INIT(false)
+
+    if (element_manager_-&gt;hasElement(*_elementRef_)) {
+        element_manager_-&gt;deleteElement(*_elementRef_);    // 每次注册，都默认为是新的节点
+    }
+
+    /**
+     * 如果是GNode类型，则直接创建节点
+     * 如果不是GNode类型，则需要外部创建好，然后注册进来
+     * */
+    if (std::is_base_of&lt;GNode, T&gt;::value) {
+        (*_elementRef_) = new(std::nothrow) T();
+    }
+
+    CGRAPH_ASSERT_NOT_NULL(*elementRef)
+    status = (*_elementRef_)-&gt;setParamManager(this-&gt;param_manager_);
+    CGRAPH_FUNCTION_CHECK_STATUS
+
+    (*_elementRef_)-&gt;setName(_name_);
+    (*_elementRef_)-&gt;setLoop(_loop_);
+    status = addDependElements(*_elementRef_, _dependElements_);
+    CGRAPH_FUNCTION_CHECK_STATUS
+
+    status = element_manager_-&gt;addElement(dynamic_cast&lt;GElementPtr&gt;(*_elementRef_));
+    CGRAPH_FUNCTION_CHECK_STATUS
+    element_repository_.insert(*_elementRef_);
+    CGRAPH_FUNCTION_END
+}
+</code></pre></div></div> <h3 id="函数-init初始化并-mock-执行以分析整张-dag-图">函数 init()：初始化并 mock 执行以分析整张 DAG 图</h3> <ul> <li> <p>检查核心成员变量是否存在</p> <ul> <li>thread_pool_</li> <li>element_manager_</li> <li>param_maneger_</li> </ul> </li> <li> <p>初始化 element_manager_：用于管理整张图的 Element</p> <ul> <li>第一步，判断 DAG 图的每个节点是否是独立联通的 isLinkable，【每个节点只能有一个依赖，每个节点的依赖节点只有一个后继节点且为当前（不能并行？？？）】</li> <li>第二步，分析 DAG 图【只会遍历分析 left_depend_小于等于 0 的节点，且节点不是 isLinkable 的】 <ul> <li>针对每个 element，都会新建一个 GCluster，并将当前遍历到的节点加入到 GCluster 中，然后不断遍历节点的后续节点，一起放到 GCluster 中。【这里似乎是一个 DFS 的遍历逻辑，如果一个节点有多个后继节点，只会选择第一个联通的 element 放入 GCluster 中】</li> <li>总共会创建 element 数量个 GCluster，多个 Cluster 理论上应该是可以并行的？放置在临时 vector 变量 curClusterArr 中，同时 para_cluster_arrs_需要将这个 curClusterArr 加入状态中？</li> <li>拷贝 curClusterArr 为 runnableClusterArr 并清空 curClusterArr，其中每个 GCluster 都要进行一次 mock 执行，不会执行实际的 Run，只是做一些逻辑上的处理，然后每次都构建新的 curClusterArr，不太清楚为什么要这么构造</li> </ul> </li> <li>第三步，初始化所有 element</li> </ul> </li> </ul> <h3 id="函数-run异步执行-dag-图上的任务">函数 run()：异步执行 DAG 图上的任务</h3> <ul> <li> <p>检查核心字段是否正常</p> <ul> <li>is_init_</li> <li>thread_pool_</li> <li>element_manager_</li> <li>param_maneger_</li> </ul> </li> <li>构建一个 future<cstatus>的数组</cstatus> </li> <li> <p>遍历可以并行的 cluster 数组，每次都要把 futures 数组清空，然后再遍历 GCluster</p> <ul> <li>针对每个 GCluster，需要让 Pipeline 的线程池去 commit GCluster【本质上就是任务添加到队列中，队列的内容就是一个个 lambda 函数，如果线程池中空闲的线程少了，就增加点新的线程】，返回的 future 会被加入到 futures 中</li> <li>遍历所有的 futures，用于获取状态【不知道为什么】</li> </ul> </li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CSTATUS</span> <span class="n">GPipeline</span><span class="o">::</span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+
+    <span class="n">CGRAPH_ASSERT_INIT</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+    <span class="n">CGRAPH_ASSERT_NOT_NULL</span><span class="p">(</span><span class="n">thread_pool_</span><span class="p">)</span>
+    <span class="n">CGRAPH_ASSERT_NOT_NULL</span><span class="p">(</span><span class="n">element_manager_</span><span class="p">)</span>
+    <span class="n">CGRAPH_ASSERT_NOT_NULL</span><span class="p">(</span><span class="n">param_manager_</span><span class="p">)</span>
+
+    <span class="kt">int</span> <span class="n">runElementSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">CSTATUS</span><span class="o">&gt;&gt;</span> <span class="n">futures</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">GClusterArr</span><span class="o">&amp;</span> <span class="n">clusterArr</span> <span class="o">:</span> <span class="n">element_manager_</span><span class="o">-&gt;</span><span class="n">para_cluster_arrs_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">futures</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">GCluster</span><span class="o">&amp;</span> <span class="n">cluster</span> <span class="o">:</span> <span class="n">clusterArr</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">futures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">thread_pool_</span><span class="o">-&gt;</span><span class="n">commit</span><span class="p">(</span><span class="n">cluster</span><span class="p">)));</span>
+            <span class="n">runElementSize</span> <span class="o">+=</span> <span class="n">cluster</span><span class="p">.</span><span class="n">getElementNum</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="n">fut</span> <span class="o">:</span> <span class="n">futures</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">fut</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+            <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">param_manager_</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">element_manager_</span><span class="o">-&gt;</span><span class="n">afterRunCheck</span><span class="p">(</span><span class="n">runElementSize</span><span class="p">);</span>
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="函数-deinit用于逆初始化结束计算">函数 deinit()：用于逆初始化，结束计算</h3> <ul> <li>核心的内容是对 param_manager_的哈希表进行清空，删除 value 指针的对象，然后将整个哈希表 clear</li> </ul> <h3 id="函数-process--initrundeinit-的集合">函数 process(): init+run+deinit 的集合</h3> <h3 id="函数-createggroup-用于创建一个节点组合">函数 createGGroup()： 用于创建一个节点组合</h3> <ul> <li>创建一种 GGroup，可以是 GCluster 或者是 GCondition，然后将每一个 element 加入 vector 中</li> </ul> <h3 id="函数-creategnode用于创建一个自定义的节点">函数 createGNode()：用于创建一个自定义的节点</h3> <ul> <li>GNode 是继承 GElement 的一个对象，可以根据 Info 来创建</li> </ul> <h3 id="核心成员变量">核心成员变量</h3> <ul> <li>bool is_init_：表示当前的 pipeline 是否被初始化了</li> <li>GElementManagerPtr element_manager_： 用于管理所有的 element</li> <li>GraphThreadPoolPtr thread_pool_： 用于放置线程池</li> <li>GElementPtrSet element_repository_： 用于标记所有被创建的节点，可以在最终释放的时候被使用！</li> <li>GParamManagerPtr param_manager_：参数管理器，整个 pipeline 会全局共享所有的参数</li> </ul> <h2 id="gelement-表示一个-dag-图中的节点">GElement: 表示一个 DAG 图中的节点</h2> <h3 id="管理类-gelementmanager">管理类 GElementManager</h3> <h4 id="函数-preruncheck用于在执行之前检查每个-element-是否为-linkable-的">函数 preRunCheck()：用于在执行之前检查每个 Element 是否为 linkable 的</h4> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CSTATUS</span> <span class="n">GElementManager</span><span class="o">::</span><span class="n">preRunCheck</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+
+    <span class="cm">/**
+     * 认定图可以连通的判定条件：
+     * 1，当前节点仅有一个依赖
+     * 2，当前节点依赖的节点，只有一个后继
+     * 3，当前节点的依赖的后继，仍是当前节点
+     */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">GElement</span><span class="o">*</span> <span class="n">element</span> <span class="o">:</span> <span class="n">manager_elements_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">dependence_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+            <span class="o">&amp;&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="p">(</span><span class="o">*</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">dependence_</span><span class="p">.</span><span class="n">begin</span><span class="p">())</span><span class="o">-&gt;</span><span class="n">run_before_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+            <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">dependence_</span><span class="p">.</span><span class="n">begin</span><span class="p">()))</span><span class="o">-&gt;</span><span class="n">run_before_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">element</span><span class="o">-&gt;</span><span class="n">dependence_</span><span class="p">.</span><span class="n">begin</span><span class="p">()))</span><span class="o">-&gt;</span><span class="n">run_before_</span><span class="p">.</span><span class="n">end</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">element</span><span class="o">-&gt;</span><span class="n">linkable_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="函数-analyse-用于分析一张-dag-图中如何构建多个支持并行的-cluster">函数 analyse(): 用于分析一张 DAG 图中如何构建多个支持并行的 Cluster</h4> <h4 id="核心成员变量-1">核心成员变量</h4> <ul> <li>GElementPtrSet manager_elements_; // 保存节点信息的内容</li> <li>ParaWorkedClusterArrs para_cluster_arrs_; // 可以并行的 cluster 数组</li> </ul> <h3 id="核心成员变量-2">核心成员变量</h3> <ul> <li>bool done_ { false }; // 判定被执行结束</li> <li>bool is_init_ { false }; // 是否初始化了</li> <li>bool linkable_ { false }; // 判定是否可以连通计算</li> <li>int loop_ { 1 }; // 节点执行次数</li> <li>std::string name_; // 节点名称</li> <li>std::string session_; // 节点唯一 id 信息</li> <li>std::set&lt;GElement *&gt; run_before_; // 被依赖的节点</li> <li>std::set&lt;GElement *&gt; dependence_; // 依赖的节点信息</li> <li>std::atomic<int> left_depend_{ 0 }; // 当 left_depend_ 值为 0 的时候，即可以执行该 node 信息</int> </li> <li>GParamManagerPtr param_manager_; // 整体流程的参数管理类，所有 pipeline 中的所有节点共享</li> </ul> <h2 id="ggroup-表示节点组合的一个基类-所有节点组合的功能都来自于此类">GGroup: 表示节点组合的一个基类, 所有节点组合的功能都来自于此类</h2> <h3 id="gcluster-表示-dag-图中的一个簇可以线性执行的几个-element">GCluster: 表示 DAG 图中的一个簇(可以线性执行的几个 element)</h3> <ul> <li>线性同步执行的一个组合</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CSTATUS</span> <span class="n">GCluster</span><span class="o">::</span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">GElementPtr</span> <span class="n">element</span> <span class="o">:</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">cluster_elements_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_int_</span> <span class="n">elementLoop</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">loop_</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">elementLoop</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// element需要被执行loop次</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">element</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+            <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="gcondition-表示-dag-图中的一个条件类-选择-group-中的其中一个-element-执行">GCondition: 表示 DAG 图中的一个条件类, 选择 group 中的其中一个 element 执行</h3> <ul> <li>核心思想，在 GCondition 进行 run()的时候，根据 choose()函数来选择对应的执行 element</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CSTATUS</span> <span class="n">GCondition</span><span class="o">::</span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+
+    <span class="n">_int_</span> <span class="n">loop</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">_int_</span> <span class="n">index</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">choose</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">GROUP_LAST_ELEMENT_INDEX</span> <span class="o">==</span> <span class="n">index</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">condition_elements_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 如果返回-1，则直接执行最后一个条件（模仿default功能）</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">condition_elements_</span><span class="p">.</span><span class="n">back</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">loop_</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">loop</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">condition_elements_</span><span class="p">.</span><span class="n">back</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+            <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&amp;&amp;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">condition_elements_</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+        <span class="c1">// 如果返回的内容，在元素范围之内，则直接执行元素的内容</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">condition_elements_</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">loop_</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">loop</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">condition_elements_</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+            <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// 设定的index不在范围内，返回错误信息</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">STATUS_ERR</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>自定义注册一个 choose()方法</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_class_</span> <span class="n">MyParamCondition</span> <span class="o">:</span> <span class="n">_public_</span> <span class="n">GCondition</span> <span class="p">{</span>
+
+<span class="nl">_public:</span><span class="n">_</span>
+    <span class="cm">/**
+     * 在这里主要演示condition中可以通过获取上方参数的形式，
+     * 来决定执行执行当前的第几个逻辑
+     * _@return_
+     */</span>
+    <span class="n">_int_</span> <span class="n">choose</span> <span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">MyParam</span><span class="o">*</span> <span class="n">myParam</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getGParam</span><span class="o">&lt;</span><span class="n">MyParam</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"param1"</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">nullptr</span> <span class="o">==</span> <span class="n">myParam</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">GROUP_LAST_ELEMENT_INDEX</span><span class="p">;</span>    <span class="c1">// 如果没获取到，固定执行最后一个逻辑</span>
+        <span class="p">}</span>
+
+        <span class="n">_int_</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">{</span>
+            <span class="n">CGRAPH_PARAM_READ_CODE_BLOCK</span><span class="p">(</span><span class="n">myParam</span><span class="p">)</span>    <span class="c1">// 如果当前算子，跟其他相关依赖算子不存在并行关系，则参数可以直接使用，不需要加锁</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">myParam</span><span class="o">-&gt;</span><span class="n">iCount</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">%</span> <span class="n">getRange</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div> <h3 id="gregion-表示子图内部还是可以并行的">GRegion: 表示子图内部还是可以并行的</h3> <ul> <li>此时在 GRegion 内部需要从外部注入一个 Thread_pool 进去，一般来说是和整个 DAG 共用一个线程池</li> </ul> <h4 id="重写函数-run-和-pipeline-的执行流程类似-支持子图内并行">重写函数 run(): 和 Pipeline 的执行流程类似, 支持子图内并行</h4> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CSTATUS</span> <span class="n">GRegion</span><span class="o">::</span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+    <span class="n">CGRAPH_ASSERT_INIT</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+    <span class="n">CGRAPH_ASSERT_NOT_NULL</span><span class="p">(</span><span class="n">thread_pool_</span><span class="p">)</span>
+    <span class="n">CGRAPH_ASSERT_NOT_NULL</span><span class="p">(</span><span class="n">manager_</span><span class="p">)</span>
+
+    <span class="n">_int_</span> <span class="n">runNodeSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">CSTATUS</span><span class="o">&gt;&gt;</span> <span class="n">futures</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">GClusterArr</span><span class="o">&amp;</span> <span class="n">clusterArr</span> <span class="o">:</span> <span class="n">manager_</span><span class="o">-&gt;</span><span class="n">para_cluster_arrs_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">futures</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">GCluster</span><span class="o">&amp;</span> <span class="n">cluster</span> <span class="o">:</span> <span class="n">clusterArr</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">futures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">thread_pool_</span><span class="o">-&gt;</span><span class="n">commit</span><span class="p">(</span><span class="n">cluster</span><span class="p">)));</span>
+            <span class="n">runNodeSize</span> <span class="o">+=</span> <span class="n">cluster</span><span class="p">.</span><span class="n">getElementNum</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">_auto_</span><span class="o">&amp;</span> <span class="n">fut</span> <span class="o">:</span> <span class="n">futures</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">fut</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+            <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">status</span> <span class="o">=</span> <span class="n">manager_</span><span class="o">-&gt;</span><span class="n">afterRunCheck</span><span class="p">(</span><span class="n">runNodeSize</span><span class="p">);</span>
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="核心成员变量-3">核心成员变量</h4> <ul> <li>GElementManagerPtr manager_; // 在 GRegion 内部也是需要一个 ElementManager 管理器的，实例化一个 Region 的时候新建</li> <li>GraphThreadPoolPtr thread_pool_; // 这里需要使用 GPipeline 类的线程池</li> </ul> <h2 id="graphthreadpool-核心的线程池类">GraphThreadPool: 核心的线程池类</h2> <h3 id="核心成员变量-4">核心成员变量</h3> <ul> <li>std::vector<a href="std::thread">std::thread</a> pool_; // 线程池</li> <li>std::queue<taskfunc> tasks_que_; // 任务队列</taskfunc> </li> <li>std::mutex mtx_; // 同步</li> <li>std::condition_variable task_cond_; // 条件阻塞</li> <li>std::atomic<bool> run_{ true }; // 线程池是否执行</bool> </li> <li>std::atomic<int> idl_thd_num_{ 0 }; // 空闲线程数量</int> </li> <li>std::atomic<int> max_thd_num_{ MAX_THREAD_NUM }; // 最大线程数</int> </li> </ul> <h3 id="run-线程空转函数">run(): 线程空转函数</h3> <ul> <li>不断执行，每一次都是加锁后先进先出从队列中取一个 task【一般要用 std::move()实现对象的移动】，然后执行对应函数</li> <li>如果当前队列为空或者整个线程处于 idle 没有被使用的状态，会阻塞在 task_cond_的逻辑中，直到其他线程发起通知才可以继续进行。</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_int_</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">run_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">TaskFunc</span> <span class="n">curFunc</span> <span class="o">=</span> <span class="nb">nullptr</span><span class="p">;</span>
+        <span class="p">{</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">{</span> <span class="n">mtx_</span> <span class="p">};</span>
+            <span class="n">task_cond_</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]{</span>
+                <span class="c1">// 值为false的时候，会阻塞当前线程</span>
+                <span class="c1">// 收到其他线程通知后，值为true的时候，会解除阻塞</span>
+                <span class="k">return</span> <span class="p">(</span><span class="o">!</span><span class="n">run_</span> <span class="o">||</span> <span class="o">!</span><span class="n">tasks_que_</span><span class="p">.</span><span class="n">empty</span><span class="p">());</span>
+            <span class="p">});</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">run_</span> <span class="o">&amp;&amp;</span> <span class="n">tasks_que_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">curFunc</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">tasks_que_</span><span class="p">.</span><span class="n">front</span><span class="p">());</span>    <span class="c1">// 按先进先出从队列取一个 task</span>
+            <span class="n">tasks_que_</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="n">idl_thd_num_</span><span class="o">--</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">curFunc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">curFunc</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="n">idl_thd_num_</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="commit-将一个-cluster-的内容加入到任务队列中">commit(): 将一个 Cluster 的内容加入到任务队列中</h3> <ul> <li>利用 std::bind()将 GCluster::process 和具体要执行的 GCluster 实例绑定在一起</li> <li>利用 std::packaged_tack&lt;int()&gt; 制作一个异步执行任务，然后将任务和对应的 future 绑定在一起，可以通过 get_future()来获取对应的句柄</li> <li>利用 std::make_shared&lt;&gt; 来构建 future 的智能指针，基于引用计数的方案可以实现 RAII</li> <li>利用 std::lock_guard 的对锁的管理属于 RAII 风格用法(Resource Acquisition Is Initialization)，在构造函数中自动绑定它的互斥体并加锁，在析构函数中解锁，大大减少了死锁的风险。</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">_int_</span><span class="o">&gt;</span> <span class="n">commit</span><span class="p">(</span><span class="k">const</span> <span class="n">GCluster</span><span class="o">&amp;</span> <span class="n">_cluster_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_auto_</span> <span class="n">curTask</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">packaged_task</span><span class="o">&lt;</span><span class="n">_int_</span><span class="p">()</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">GCluster</span><span class="o">::</span><span class="n">process</span><span class="p">,</span> <span class="n">_cluster_</span><span class="p">,</span> <span class="nb">false</span><span class="p">));</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">_int_</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">curTask</span><span class="o">-&gt;</span><span class="n">get_future</span><span class="p">();</span>
+    <span class="p">{</span>
+        <span class="c1">// 添加任务到队列</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">{</span> <span class="n">mtx_</span> <span class="p">};</span>
+        <span class="n">tasks_que_</span><span class="p">.</span><span class="n">push</span><span class="p">([</span><span class="n">curTask</span><span class="p">]()</span> <span class="p">{</span>
+            <span class="p">(</span><span class="o">*</span><span class="n">curTask</span><span class="p">)();</span>
+        <span class="p">});</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">idl_thd_num_</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">pool_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">max_thd_num_</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// 如果空闲thread小于1，并且不超过max限制</span>
+            <span class="n">addThread</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">task_cond_</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="gparam-表示参数的类">GParam: 表示参数的类</h2> <ul> <li> <p>核心思想：读写锁管理一份共享的内存参数</p> <ul> <li>std::mutex 互斥锁 =&gt; std::lock_guard<a href="std::mutex">std::mutex</a> 实现 RAII</li> <li>std::shared_mutex 读写锁（共享级别：多个线程可以共享锁的所有权； 独占级别：仅有一个线程可以获得锁） <ul> <li>std::shared_lock<a href="std::shared_mutex">std::shared_mutex</a>：实现共享级别的 RAII</li> <li>std::unique_lock<a href="std::shared_mutex">std::shared_mutex</a>： 实现互斥级别的 RAII</li> </ul> </li> </ul> </li> <li> <p>中心化存储所有的参数数据，函数是没有返回值的也不会有参数，所有的函数都要重新自己去注册，写起来似乎也不是很方便。</p> </li> </ul> <h2 id="gaspect-表示切面-可以为某个-element-增加装饰器">GAspect: 表示切面, 可以为某个 Element 增加装饰器</h2> <ul> <li>一般来说需要协商好切面实现的接口 <ul> <li>beginInit</li> <li>finishInit</li> <li>beginRun</li> <li>finishRun</li> <li>beginDestroy</li> <li>finishDestroy</li> </ul> </li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_class_</span> <span class="n">MyTraceAspect</span> <span class="o">:</span> <span class="n">_public_</span> <span class="n">CGraph</span><span class="o">::</span><span class="n">GAspect</span> <span class="p">{</span>
+<span class="nl">_public:</span><span class="n">_</span>
+    <span class="cm">/**
+     * 实现几个切面函数逻辑，模拟在对应执行的位置，打印trace信息
+     */</span>
+    <span class="n">CStatus</span> <span class="n">beginInit</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] init begin ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">CStatus</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">CVoid</span> <span class="nf">finishInit</span><span class="p">(</span><span class="k">const</span> <span class="n">CStatus</span><span class="o">&amp;</span> <span class="n">_curStatus_</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] init finished, error code is [%d] ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">(),</span>
+                            <span class="n">_curStatus_</span><span class="p">.</span><span class="n">getCode</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="n">CStatus</span> <span class="nf">beginRun</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] run begin ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="k">return</span> <span class="nf">CStatus</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">CVoid</span> <span class="nf">finishRun</span><span class="p">(</span><span class="k">const</span> <span class="n">CStatus</span><span class="o">&amp;</span> <span class="n">_curStatus_</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_curStatus_</span><span class="p">.</span><span class="n">isOK</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] run finished, status is ok ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] run finished, error code is [%d] ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">(),</span>
+                                <span class="n">_curStatus_</span><span class="p">.</span><span class="n">getCode</span><span class="p">());</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">CStatus</span> <span class="nf">beginDestroy</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] destroy begin ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+        <span class="k">return</span> <span class="nf">CStatus</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">CVoid</span> <span class="nf">finishDestroy</span><span class="p">(</span><span class="k">const</span> <span class="n">CStatus</span><span class="o">&amp;</span> <span class="n">_curStatus_</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">CGraph</span><span class="o">::</span><span class="n">CGRAPH_ECHO</span><span class="p">(</span><span class="s">"----&gt; [MyTraceAspect] [%s] destroy finished, error code is [%d] ..."</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">().</span><span class="n">c_str</span><span class="p">(),</span>
+                            <span class="n">_curStatus_</span><span class="p">.</span><span class="n">getCode</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div> <ul> <li>本质上就是在执行之前，根据反射方法找到当前需要执行的 Aspect 类型，然后调用执行即可</li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CStatus</span> <span class="n">GElement</span><span class="o">::</span><span class="n">fatProcessor</span><span class="p">(</span><span class="k">const</span> <span class="n">CFunctionType</span><span class="o">&amp;</span> <span class="n">type</span><span class="p">,</span> <span class="n">CSize</span> <span class="n">loop</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">CGRAPH_FUNCTION_BEGIN</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">loop</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="n">CFunctionType</span><span class="o">::</span><span class="n">RUN</span><span class="p">:</span> <span class="p">{</span>
+                <span class="cm">/** 执行带切面的run方法 */</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">BEGIN_RUN</span><span class="p">);</span>
+                <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+                <span class="k">do</span> <span class="p">{</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="n">run</span><span class="p">();</span>
+                    <span class="cm">/**
+                     * 如果状态是ok的，并且被条件hold住，则循环执行
+                     * 默认所有element的isHold条件均为false，即不hold，即执行一次
+                     * 可以根据需求，对任意element类型，添加特定的isHold条件
+                     * */</span>
+                <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">isOK</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">isHold</span><span class="p">());</span>
+                <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">FINISH_RUN</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">case</span> <span class="n">CFunctionType</span><span class="o">::</span><span class="n">INIT</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">BEGIN_INIT</span><span class="p">);</span>
+                <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">init</span><span class="p">();</span>
+                <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">FINISH_INIT</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">case</span> <span class="n">CFunctionType</span><span class="o">::</span><span class="n">DESTROY</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">BEGIN_DESTROY</span><span class="p">);</span>
+                <span class="n">CGRAPH_FUNCTION_CHECK_STATUS</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">destroy</span><span class="p">();</span>
+                <span class="n">doAspect</span><span class="p">(</span><span class="n">GAspectType</span><span class="o">::</span><span class="n">FINISH_DESTROY</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="n">CGRAPH_RETURN_ERROR_STATUS</span><span class="p">(</span><span class="s">"get function type error"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">CGRAPH_FUNCTION_END</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="gdaemon-表示每隔几秒之后就要执行一次逻辑">GDaemon: 表示每隔几秒之后就要执行一次逻辑</h2> <ul> <li>std::async：C++11 提出的异步逻辑，会返回一个 std::future<t> </t> <ul> <li>参数 1：启动策略 <ul> <li>std::launch::async： 保证异步行为，异步函数将会在独立的线程中执行</li> <li>std::launch::deferred： 当其他线程调用 get()来访问状态的时候，将调用非异步行为</li> <li> <table> <tbody> <tr> <td>std::launch::async</td> <td>std::launch::deferred： 由系统来决定是否异步执行</td> </tr> </tbody> </table> </li> </ul> </li> <li>参数 2：实际的异步函数和回调返回 <ul> <li>直接使用函数</li> <li>使用函数对象 【比如在类中重载一个 operator() 】</li> <li>lambda 表达式</li> </ul> </li> </ul> </li> </ul> <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_template_</span><span class="o">&lt;</span><span class="n">_typename_</span> <span class="n">FunctionType</span><span class="o">&gt;</span>
+<span class="n">CVoid</span> <span class="nf">start</span><span class="p">(</span><span class="n">CMSec</span> <span class="n">_interval_</span><span class="p">,</span> <span class="k">const</span> <span class="n">FunctionType</span><span class="o">&amp;</span> <span class="n">_task_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">is_stop_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>    <span class="c1">// 如果正在执行中，则无法继续执行</span>
+    <span class="p">}</span>
+
+    <span class="n">is_stop_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="cm">/**
+     * std::launch::async：在调用async就开始创建线程。
+     * std::launch::deferred：延迟加载方式创建线程。调用async时不创建线程，直到调用了future的get或者wait时才创建线程。
+     * 后期会考虑将这个功能融合到线程池中去
+     */</span>
+    <span class="n">future_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">launch</span><span class="o">::</span><span class="n">async</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">,</span> <span class="n">_interval_</span><span class="p">,</span> <span class="n">_task_</span><span class="p">]()</span> <span class="p">{</span>
+         <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">is_stop_</span><span class="p">)</span> <span class="p">{</span>
+             <span class="n">CGRAPH_UNIQUE_LOCK</span> <span class="n">lk</span><span class="p">(</span><span class="n">mutex_</span><span class="p">);</span>
+             <span class="k">const</span> <span class="n">_auto_</span><span class="o">&amp;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">cv_</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">_interval_</span><span class="p">));</span>
+             <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cv_status</span><span class="o">::</span><span class="n">timeout</span> <span class="o">==</span> <span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="n">_task_</span><span class="p">();</span>
+             <span class="p">}</span>
+         <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div> <h1 id="dag-图调度优化">DAG 图调度优化</h1> <h2 id="dag-图的最大并发量计算">DAG 图的最大并发量计算</h2> <ul> <li>第一步：求出全路径</li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/BOambQ8W1ogoZyxMwXycdO9inUe-480.webp 480w, /assets/img/feishu_docs_static/BOambQ8W1ogoZyxMwXycdO9inUe-800.webp 800w, /assets/img/feishu_docs_static/BOambQ8W1ogoZyxMwXycdO9inUe-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/BOambQ8W1ogoZyxMwXycdO9inUe.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <ul> <li>第二步：根据全路径，得出所有可达点对</li> <li>第三步，根据上面的点集信息，得到对应的二维矩阵，其中 A 可以到达 BCDEF，B 可以到达 ADEF</li> <li>第四步，求出二维矩阵的最大独立集【独立集是一个顶点的集合，集合中的顶点两两不相邻】</li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/QOnZb33xnoCRi8xZSjccgV82nHb-480.webp 480w, /assets/img/feishu_docs_static/QOnZb33xnoCRi8xZSjccgV82nHb-800.webp 800w, /assets/img/feishu_docs_static/QOnZb33xnoCRi8xZSjccgV82nHb-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/QOnZb33xnoCRi8xZSjccgV82nHb.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="退出暂停和恢复机制">退出、暂停和恢复机制</h2> <h1 id="线程池优化方案">线程池优化方案</h1> <ul> <li> <p>C++ 线程池的问题</p> <ul> <li>C++11 之前线程基本是没有标准库线程可以用的</li> <li>threadpool 和 barrier 需要自己去实现</li> </ul> </li> <li> <p>任务队列</p> <ul> <li>存放的元素都是一个个自定义输入输出的任务，任务入队之前要对 queue 的尾部加锁</li> <li>几个 thread 会竞争获取任务队列的头部任务，任务出队的时候要对 queue 的头部加锁</li> </ul> </li> <li> <p>并发优化的基本点</p> <ul> <li>增加扇入扇出</li> <li>增加负载</li> </ul> </li> <li> <p>目标</p> <ul> <li>开箱即用，使用 std 库手工实现</li> <li>简单易用，任务队列可以支持任意格式的任务</li> <li>性能强</li> </ul> </li> </ul> <h2 id="local-thread-机制-本地队列类似-gmp-中的-mp-模型">local-thread 机制: 本地队列(类似 GMP 中的 MP 模型)</h2> <ul> <li>修改方案： <ul> <li>n 个线程都有私有的本地线程队列，线程执行任务的时候就不需要加锁争抢，直接从本地任务队列中获取即可。</li> <li>本线程中产生的 Task 尽可能放在本线程的 Queue 中执行【Golang 的 GMP 也实现了这个】</li> </ul> </li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/PdXjbgEvRoobAlxC3o8c0KEonAb-480.webp 480w, /assets/img/feishu_docs_static/PdXjbgEvRoobAlxC3o8c0KEonAb-800.webp 800w, /assets/img/feishu_docs_static/PdXjbgEvRoobAlxC3o8c0KEonAb-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/PdXjbgEvRoobAlxC3o8c0KEonAb.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="local-free-机制-无锁编程">local-free 机制: 无锁编程</h2> <ul> <li>无锁编程的实现方案 <ul> <li>基于 atomic 的原子操作 实现临界区的修改，本质上是在执行原子指令(比如 i++)的时候，变量内部维护了一个自旋锁（确保当前的线程不会被切换）和一个 CAS（一种乐观锁，确保写入的数值是正确的）</li> <li>基于内部封装的 mutex</li> <li>基于 CAS 机制 【Compare-And-Swap】</li> </ul> </li> </ul> <h2 id="work-stealing-机制-gmp-中的实现也存在这个方案">work-stealing 机制: GMP 中的实现也存在这个方案</h2> <ul> <li>当某个线程的本地执行队列为空的时候，从另一个线程的本地执行队列中 steal 一些任务</li> <li>一般来说都是按照 thread 的序号顺序，thread5 会按 thread6, thread7, thread0, … 这样的顺序来偷取</li> <li> <p>每个 thread 执行的任务顺序</p> <ul> <li>本地队列中的任务</li> <li>线程池 pool 中的任务</li> <li>从其他队列 steal 来的任务</li> </ul> </li> <li> <p>缺点和优化方案</p> <ul> <li>为了偷取一个任务，需要遍历所有的 thread 的本地队列来实现偷取，效率太低 =&gt; 只考虑从相邻的 3 个线程中偷取</li> </ul> </li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/CyHzbtO09o1wXKxy1aicy0bNn3t-480.webp 480w, /assets/img/feishu_docs_static/CyHzbtO09o1wXKxy1aicy0bNn3t-800.webp 800w, /assets/img/feishu_docs_static/CyHzbtO09o1wXKxy1aicy0bNn3t-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/CyHzbtO09o1wXKxy1aicy0bNn3t.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="自动扩缩容机制-弹性伸缩-threadmachine机制">自动扩缩容机制: 弹性伸缩 thread(machine)机制</h2> <ul> <li>核心思想：在负载繁忙的时候，多增加一些 thread；当负载空闲的时候，就对 thread 进行自动回收</li> <li> <p>主线程（PrimaryThread）和辅助线程（SecondaryThread）和监控线程（MonitorThread）</p> <ul> <li>主线程恒定不变</li> <li>辅助线程可以根据负载繁忙情况来进行动态伸缩</li> <li>监控线程会每隔 TTL 时间，轮询检测所有的主线程是否都在 running 状态，如果是就是忙碌状态，需要增加一个新的辅助线程；否则则认为 Pool 处于空闲状态，会销毁当前的辅助线程。</li> </ul> </li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/MFfgbpcX7okVoixTuJjcRqlwnRg-480.webp 480w, /assets/img/feishu_docs_static/MFfgbpcX7okVoixTuJjcRqlwnRg-800.webp 800w, /assets/img/feishu_docs_static/MFfgbpcX7okVoixTuJjcRqlwnRg-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/MFfgbpcX7okVoixTuJjcRqlwnRg.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <ul> <li>注意事项 <ul> <li>线程不是越多越好的，因为线程的切换开销成本是比较大的</li> <li>一般计算密集型任务开辟和 cpu 核心数(n)相同的线程数来执行</li> <li>一般 I/O 密集型任务开辟 2n+1 个线程来执行</li> <li>最佳线程数量 = （（线程等待时间 + 线程 CPU 时间）/线程 CPU 时间 ）* CPU 数目</li> </ul> </li> </ul> <h2 id="批量处理机制-一次获取多个-task-执行">批量处理机制: 一次获取多个 Task 执行</h2> <ul> <li>主线程和辅助线程在从队列中获取/偷取任务的时候，整批整批地获取，减少争抢锁的次数，用于提高性能</li> <li> <p>注意事项</p> <ul> <li>这种机制会打乱 queue 中任务的执行顺序 =&gt; 解决方案：DAG 图调度的场景中，放入线程池中执行的任务，均是“互不依赖”的，有依赖的任务节点会等被依赖的节点执行完毕之后才会放入 Pool 中</li> </ul> </li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/K6YNbLCOSozy1WxMOWFcNkXznVg-480.webp 480w, /assets/img/feishu_docs_static/K6YNbLCOSozy1WxMOWFcNkXznVg-800.webp 800w, /assets/img/feishu_docs_static/K6YNbLCOSozy1WxMOWFcNkXznVg-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/K6YNbLCOSozy1WxMOWFcNkXznVg.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="负载均衡机制">负载均衡机制</h2> <ul> <li>核心机制 <ul> <li>尽可能保证当前主线程产生的子 Task 会被放入到当前的队列中</li> <li>尽可能保证每个主线程队列中所有任务的总耗时基本一致</li> </ul> </li> </ul> <div class="row mt-3"> <figure> <picture> <source class="responsive-img-srcset" srcset=" /assets/img/feishu_docs_static/ClvEbX0xDopXHQxqit4ctXelnYd-480.webp 480w, /assets/img/feishu_docs_static/ClvEbX0xDopXHQxqit4ctXelnYd-800.webp 800w, /assets/img/feishu_docs_static/ClvEbX0xDopXHQxqit4ctXelnYd-1400.webp 1400w, " sizes="95vw" type="image/webp"></source> <img src="/assets/img/feishu_docs_static/ClvEbX0xDopXHQxqit4ctXelnYd.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> <h2 id="避免忙等待避免阻塞等待-try_lockyield">避免忙等待(避免阻塞等待, try_lock+yield)</h2> <ul> <li> <p>这个核心思想在 Golang 和 Python 中均有体现</p> <ul> <li>yield 类似 return，在 Python 中可以基于此来实现一个生成器，调用 next()会从 yield 返回的位置开始执行。这里的 yield 类似 Golang 的 runtime.Gosched()</li> <li>try_lock 在 Golang 中也有实现，如果此时业务不能拿到锁，也不要让他阻塞等待着，而是利用 yield 来让出 CPU</li> </ul> </li> <li> <p>忙等待的方法主要运用在自旋锁场景中，可以用于 CAS 操作和 Atomic 操作中</p> <ul> <li>CAS 需要一致比较当前值和期望值是否一致</li> <li>Atomic 需要保证当前执行线程不退出</li> </ul> </li> </ul> <h2 id="分支预测优化少见">分支预测优化(少见)</h2> <h2 id="减少无用的-copystdmoveemplace">减少无用的 Copy(std::move+emplace)</h2> <ul> <li>std::move 用于直接转移对象的内容</li> <li> <p>指针的选型要避免 shared_ptr 和 unique_ptr 不断多次申请和来回赋值的问题</p> <ul> <li>禁止内部使用 shared_ptr【本质上就是引用计数管理内存，当指向某个实例的指针引用计数降低到 0，会自动释放动态分配的资源】【shared_ptr 内部存在 CAS 校验机制，占据内存也比较大】【shared_ptr 是线程安全的，引用计数是存在锁机制的！】【<strong>拷贝使得对象的引用计数增加 1</strong>，<strong>赋值使得原对象引用计数减 1，当计数为 0 时，自动释放内存</strong>。后来指向的对象引用计数加 1，指向后来的对象】</li> <li>采用 unique_ptr 来管理个别不定期申请和释放的资源【独享所有权的指针，不支持普通的拷贝和赋值操作，只能支持移动语义操作，如果转移一个 unique_ptr，会发生对象的所有权从源指针到目标指针的转移过程】</li> <li>weak_ptr【弱引用，避免循环引用的场景】：指向一个由 shared_ptr 管理的对象，只会引用但是不会计数，当一个对象同时被一个 shared_ptr 和一个 weak_ptr 引用，不管 weak_ptr 是否引用这个对象，shared_ptr 析构之后都会导致对象被释放</li> <li>auto_ptr【解决的是有异常抛出的时候发生内存泄漏的问题】：当抛出异常的时候，指针 p 指向的空间需要被合理回收。【auto_ptr 的构造函数是 explicit 函数，阻止指针的隐式转换，不能将一般的指针类型赋值给 auto_ptr，必须要用 auto_ptr 的构造函数来创建对象。被 explicit 修饰的构造函数的类，不能发生相应的隐式类型转换】【auto_ptr 析构函数中删除对象是用 delete，而不是 delete[]，不能用于管理数组】</li> </ul> </li> </ul> <h2 id="执行超时机制">执行超时机制</h2> <ul> <li>需要限制单个线程的执行时间，做一个时间限定，如果超过了限定时间就进行阻塞并返回错误信息。</li> </ul> <h2 id="任务组utaskgroup">任务组（UTaskGroup）</h2> <ul> <li>一批任务完成之后再执行其他的任务</li> <li>给同一批任务设定统一的等待时长</li> <li>在多批任务执行结束的时候，固定执行某个回调逻辑</li> </ul> <h2 id="优先级和阻塞执行">优先级和阻塞执行</h2> <ul> <li>用于给任务设置优先级</li> </ul> </div> </article> </div> </div> <footer class="fixed-bottom"> <div class="container mt-0"> © Copyright 2024 Linchang Xiao. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script> <script defer src="/assets/js/masonry.js" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.8/dist/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?7b30caa5023af4af8408a472dc4e1ebb"></script> <script defer src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script> <script src="/assets/js/no_defer.js?d633890033921b33e0ceb13d22340a9c"></script> <script defer src="/assets/js/common.js?acdb9690d7641b2f8d40529018c71a01"></script> <script defer src="/assets/js/copy_code.js?9b43d6e67ddc7c0855b1478ee4c48c2d" type="text/javascript"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script type="text/javascript">window.MathJax={tex:{tags:"ams"}};</script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script> <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script type="text/javascript">function progressBarSetup(){"max"in document.createElement("progress")?(initializeProgressElement(),$(document).on("scroll",function(){progressBar.attr({value:getCurrentScrollPosition()})}),$(window).on("resize",initializeProgressElement)):(resizeProgressBar(),$(document).on("scroll",resizeProgressBar),$(window).on("resize",resizeProgressBar))}function getCurrentScrollPosition(){return $(window).scrollTop()}function initializeProgressElement(){let e=$("#navbar").outerHeight(!0);$("body").css({"padding-top":e}),$("progress-container").css({"padding-top":e}),progressBar.css({top:e}),progressBar.attr({max:getDistanceToScroll(),value:getCurrentScrollPosition()})}function getDistanceToScroll(){return $(document).height()-$(window).height()}function resizeProgressBar(){progressBar.css({width:getWidthPercentage()+"%"})}function getWidthPercentage(){return getCurrentScrollPosition()/getDistanceToScroll()*100}const progressBar=$("#progress");window.onload=function(){setTimeout(progressBarSetup,50)};</script> </body> </html>
