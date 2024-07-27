@@ -3,12 +3,20 @@ import sys
 
 def replace_markdown_links(content):
     # 正则表达式匹配 [ ](static/{path}) 的格式
-    pattern = r'\[\]\(static/(.*?)\)'
+    pattern = r'!\[\]\(static/(.*?)\)'
     # 定义替换模板
-    replacement_template = r'<div class="row mt-3">\n    {% include figure.html path="assets/img/feishu_docs_static/\1" class="img-fluid rounded z-depth-1" %}\n</div>\n'
+    replacement_template = r'\n<div class="row mt-3">\n    {% include figure.html path="assets/img/feishu_docs_static/\1" class="img-fluid rounded z-depth-1" %}\n</div>\n'
     
     # 使用 re.sub 进行替换
     replaced_content = re.sub(pattern, replacement_template, content)
+    
+    pattern = r'<u>'
+    replacement_template = ''
+    replaced_content = re.sub(pattern, replacement_template, replaced_content)
+    
+    pattern = r'</u>'
+    replacement_template = ''
+    replaced_content = re.sub(pattern, replacement_template, replaced_content)
     return replaced_content
 
 def process_file(input_filename, output_filename=None):
