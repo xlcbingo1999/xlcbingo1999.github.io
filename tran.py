@@ -1,7 +1,7 @@
 import re
 import sys
 
-def replace_markdown_links(content):
+def replace_markdown_links_feishu(content):
     # 正则表达式匹配 [ ](static/{path}) 的格式
     pattern = r'!\[\]\(static/(.*?)\)'
     # 定义替换模板
@@ -19,11 +19,32 @@ def replace_markdown_links(content):
     replaced_content = re.sub(pattern, replacement_template, replaced_content)
     return replaced_content
 
+def replace_markdown_links_online(content):
+    # 正则表达式匹配 [{不关心path}]({path}) 的格式
+    pattern = r'!\[(.*?)\]\((.*?)\)'
+    # 定义替换模板
+    replacement_template = r'\n<div class="row mt-3">\n    {% include figure.html path="\2" class="img-fluid rounded z-depth-1" %}\n</div>\n'
+
+
+     # 使用 re.sub 进行替换
+    replaced_content = re.sub(pattern, replacement_template, content)
+    # print(f"replaced_content: {replaced_content}")
+    pattern = r'<u>'
+    replacement_template = ''
+    replaced_content = re.sub(pattern, replacement_template, replaced_content)
+    
+    pattern = r'</u>'
+    replacement_template = ''
+    replaced_content = re.sub(pattern, replacement_template, replaced_content)
+    return replaced_content
+    
+
 def process_file(input_filename, output_filename=None):
     with open(input_filename, 'r', encoding='utf-8') as file:
         content = file.read()
     
-    new_content = replace_markdown_links(content)
+    new_content = replace_markdown_links_feishu(content)
+    new_content = replace_markdown_links_online(new_content)
     
     # 如果没有指定输出文件名，则默认覆盖原文件
     if output_filename is None:
