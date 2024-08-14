@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Internship at Alibaba Group Holding Limited!
+Internship at Alibaba Holding!
