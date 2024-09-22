@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Our paper `CRS: A Cost-Aware Resource Scheduling Framework for Deep Learning Task Orchestration in Mobile Clouds` accepted to [IEEE TMC (CCF-A)](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=7755)!
+Our paper [`CRS: A Cost-Aware Resource Scheduling Framework for Deep Learning Task Orchestration in Mobile Clouds`](https://ieeexplore.ieee.org/document/10684383) accepted to IEEE Transactions on Mobile Computing (TMC, CCF-A)!
