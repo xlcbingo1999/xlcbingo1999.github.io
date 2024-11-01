@@ -17,6 +17,6 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-Currently I am a second-year master’s student in School of Computer Science and Engineering, Sun Yat-sen University (SYSU). I was an undergraduate from Sun Yat-sen University and received my B.Eng. degree in School of Computer Science and Engineering on June, 2022.
+Currently I am a third-year master’s student in School of Computer Science and Engineering, Sun Yat-sen University (SYSU). I was an undergraduate from Sun Yat-sen University and received my B.Eng. degree in School of Computer Science and Engineering on June, 2022.
 
 [My CV](/assets/pdf/Linchang_Xiao.pdf) 
